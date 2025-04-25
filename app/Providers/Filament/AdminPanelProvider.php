@@ -68,11 +68,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->userMenuItems([
                 'profile' => MenuItem::make()
-                    ->url(fn () => Profile::getUrl()),
+                    ->url(fn() => Profile::getUrl()),
             ])
-            ->navigationItems([
-
-            ])
+            ->navigationItems([])
             ->path('/')
             ->login(Login::class)
             ->colors([
@@ -82,7 +80,7 @@ class AdminPanelProvider extends PanelProvider
             ->font('DM Sans')
             ->maxContentWidth('full')
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->renderHook('panels::styles.before', fn (): string => Blade::render(<<<'HTML'
+            ->renderHook('panels::styles.before', fn(): string => Blade::render(<<<'HTML'
                 <style>
                     /** Setting Base Font */
                     html, body{
@@ -90,15 +88,15 @@ class AdminPanelProvider extends PanelProvider
                     }
                 </style>
             HTML))
-            ->renderHook(PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABLE_BEFORE, fn (): View => view('components.total-records'))
-            ->renderHook(PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABLE_AFTER, fn (): string => Blade::render(<<<'HTML'
+            ->renderHook(PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABLE_BEFORE, fn(): View => view('components.total-records'))
+            ->renderHook(PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABLE_AFTER, fn(): string => Blade::render(<<<'HTML'
                 <x-modal-loading wire:loading wire:target="{{ $target }}" />
             HTML, [
                 'target' => implode(',', $listenModalLoading),
             ]))
             ->renderHook(
                 PanelsRenderHook::BODY_END,
-                fn (): string => Blade::render('
+                fn(): string => Blade::render('
                     <x-wire-modal-loading />
                 '),
             )
@@ -110,13 +108,14 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // Widgets\FilamentInfoWidget::class,
             ])
             ->plugins([
                 (new class extends \BezhanSalleh\FilamentShield\FilamentShieldPlugin
                 {
                     public function register(Panel $panel): void
-                    { /** dont register resource, just use custom role resource */
+                    {
+                        /** dont register resource, just use custom role resource */
                     }
                 })::make(),
             ])
