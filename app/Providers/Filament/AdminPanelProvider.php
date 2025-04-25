@@ -36,7 +36,8 @@ class AdminPanelProvider extends PanelProvider
         Modal::closedByClickingAway(false);
         Table::configureUsing(function (Table $table): void {
             $table->defaultPaginationPageOption(25)
-                ->paginationPageOptions([5, 10, 25, 50, 100]);
+                ->paginationPageOptions([5, 10, 25, 50, 100])
+                ->emptyStateHeading('Tidak ada data');
         });
     }
 
