@@ -16,7 +16,8 @@ class ManageJenisPerawatan extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('Tambah'),
+                ->label('Tambah')
+                ->modalWidth('xl'),
         ];
     }
 }
