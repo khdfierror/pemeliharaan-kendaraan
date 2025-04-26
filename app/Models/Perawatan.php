@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Perawatan extends Model
 {
@@ -27,5 +28,10 @@ class Perawatan extends Model
     public function kendaraan(): BelongsTo
     {
         return $this->belongsTo(Kendaraan::class);
+    }
+
+    public function detailKendaraan(): HasMany
+    {
+        return $this->hasMany(DetailPerawatan::class);
     }
 }

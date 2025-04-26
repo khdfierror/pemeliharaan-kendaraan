@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JenisPerawatan extends Model
 {
@@ -15,4 +16,9 @@ class JenisPerawatan extends Model
         'kode',
         'nama',
     ];
+
+    public function detailPerawatan(): HasMany
+    {
+        return $this->hasMany(DetailPerawatan::class);
+    }
 }

@@ -29,31 +29,48 @@ class PerawatanResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('kendaraan_id')
-                    ->label('Kendaraan')
-                    ->relationship('kendaraan', 'nama')
-                    ->required()
-                    ->native(false)
-                    ->getOptionLabelFromRecordUsing(fn(Model $record) => "{$record->nama} ({$record->nomor_plat})")
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\TextInput::make('tahun')
-                    ->numeric()
-                    ->required(),
-                Forms\Components\TextInput::make('nomor_nota')
-                    ->label('Nomor Nota')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\DatePicker::make('tanggal_nota')
-                    ->label('Tanggal Nota')
-                    ->required()
-                    ->format('Y-m-d')
-                    ->displayFormat('d/m/Y')
-                    ->native(false)
-                    ->suffixIcon('carbon-event-schedule'),
-                Forms\Components\Textarea::make('keterangan')
-                    ->autosize()
-            ])->columns(1);
+                Forms\Components\Grid::make(6)
+                    ->schema([
+                        Forms\Components\Group::make([
+                            Forms\Components\Select::make('kendaraan_id')
+                                ->label('Kendaraan')
+                                ->relationship('kendaraan', 'nama')
+                                ->required()
+                                ->native(false)
+                                ->getOptionLabelFromRecordUsing(fn(Model $record) => "{$record->nama} ({$record->nomor_plat})")
+                                ->searchable()
+                                ->preload(),
+                            Forms\Components\TextInput::make('tahun')
+                                ->numeric()
+                                ->required(),
+                            Forms\Components\TextInput::make('nomor_nota')
+                                ->label('Nomor Nota')
+                                ->required()
+                                ->numeric(),
+                            Forms\Components\DatePicker::make('tanggal_nota')
+                                ->label('Tanggal Nota')
+                                ->required()
+                                ->format('Y-m-d')
+                                ->displayFormat('d/m/Y')
+                                ->native(false)
+                                ->suffixIcon('carbon-event-schedule'),
+                            Forms\Components\Textarea::make('keterangan')
+                                ->autosize(),
+                        ])->columnSpan(4),
+
+                        Forms\Components\Section::make([
+                            Forms\Components\Placeholder::make('created_at')
+                                ->label('Dibuat pada')
+                                ->content(fn(Model $record): string => $record->created_at->diffForHumans())
+                                ->hiddenOn(['create']),
+                            Forms\Components\Placeholder::make('updated_at')
+                                ->label('Diubah pada')
+                                ->content(fn(Model $record): string => $record->created_at->diffForHumans())
+                                ->hiddenOn(['create']),
+                        ])->columnSpan(2)
+                            ->hiddenOn(['create']),
+                    ])
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -100,10 +117,19 @@ class PerawatanResource extends Resource
             ]);
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManagePerawatan::route('/'),
+            'index' => Pages\ListPerawatan::route('/'),
+            'create' => Pages\CreatePerawatan::route('/create'),
+            'edit' => Pages\EditPerawatan::route('/{record}/edit'),
         ];
     }
 }
