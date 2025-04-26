@@ -2,20 +2,22 @@
 
 namespace App\Models;
 
+use App\Concerns\HasTahunAktif;
 use App\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Kendaraan extends Model
 {
-    use HasUlids;
+    use HasUlids, HasTahunAktif;
 
     protected $table = 'kendaraan';
 
     protected $fillable = [
+        'tahun',
         'nomor_plat',
         'jumlah_roda',
-        'tahun',
+        'tahun_produksi',
         'merek',
         'nama',
     ];

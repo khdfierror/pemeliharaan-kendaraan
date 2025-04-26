@@ -17,6 +17,13 @@ class DetailPerawatanRelationManager extends RelationManager
 {
     protected static string $relationship = 'detailPerawatan';
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery()->tahunAktif();
+
+        return $query;
+    }
+
     public function form(Form $form): Form
     {
         return $form

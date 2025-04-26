@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('perawatan', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->unsignedSmallInteger('tahun')->nullable()->index();
             $table->foreignUlid('kendaraan_id')->nullable()->index();
-            $table->foreignUlid('tahun')->nullable()->index();
             $table->string('nomor_nota')->nullable();
             $table->date('tanggal_nota')->nullable();
             $table->text('keterangan')->nullable();

@@ -25,6 +25,13 @@ class KendaraanResource extends Resource
 
     protected static ?string $slug = 'kendaraan';
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery()->tahunAktif();
+
+        return $query;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -36,7 +43,8 @@ class KendaraanResource extends Resource
                     ->label('Jumlah Roda')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('tahun')
+                Forms\Components\TextInput::make('tahun_produksi')
+                    ->label('Tahun Produksi')
                     ->numeric(),
                 Forms\Components\Select::make('merek')
                     ->options([
@@ -64,7 +72,8 @@ class KendaraanResource extends Resource
                 Tables\Columns\TextColumn::make('jumlah_roda')
                     ->label('Jumlah Roda')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('tahun')
+                Tables\Columns\TextColumn::make('tahun_produksi')
+                    ->label('Tahun Produksi')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('merek')
                     ->searchable()

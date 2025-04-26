@@ -29,6 +29,13 @@ class PerawatanResource extends Resource
 
     protected static ?string $slug = 'perawatan';
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery()->tahunAktif();
+
+        return $query;
+    }
+
     public static function form(Form $form): Form
     {
         return $form

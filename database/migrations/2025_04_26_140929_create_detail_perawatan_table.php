@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('detail_perawatan', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->unsignedSmallInteger('tahun')->nullable()->index();
             $table->foreignUlid('perawatan_id')->nullable()->index();
             $table->foreignUlid('jenis_perawatan_id')->nullable()->index();
             $table->string('jumlah')->nullable();

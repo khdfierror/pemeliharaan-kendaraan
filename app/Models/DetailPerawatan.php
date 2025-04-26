@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
+use App\Concerns\HasTahunAktif;
 use App\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DetailPerawatan extends Model
 {
-    use HasUlids;
+    use HasUlids, HasTahunAktif;
 
     protected $table = 'detail_perawatan';
 
     protected $fillable = [
+        'tahun',
         'perawatan_id',
         'jenis_perawatan_id',
         'jumlah',

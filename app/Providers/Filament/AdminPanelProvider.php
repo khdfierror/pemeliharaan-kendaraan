@@ -90,6 +90,7 @@ class AdminPanelProvider extends PanelProvider
                     }
                 </style>
             HTML))
+            ->renderHook('panels::user-menu.before', fn() => view('components.select-tahun'))
             ->renderHook(PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABLE_BEFORE, fn(): View => view('components.total-records'))
             ->renderHook(PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABLE_AFTER, fn(): string => Blade::render(<<<'HTML'
                 <x-modal-loading wire:loading wire:target="{{ $target }}" />

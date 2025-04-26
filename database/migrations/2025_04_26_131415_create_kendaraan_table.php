@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('kendaraan', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->unsignedSmallInteger('tahun')->nullable()->index();
             $table->string('nomor_plat')->nullable()->index();
             $table->string('jumlah_roda')->nullable();
-            $table->string('tahun')->nullable();
+            $table->string('tahun_produksi')->nullable();
             $table->string('merek')->nullable();
             $table->string('nama')->nullable();
             $table->timestamps();
