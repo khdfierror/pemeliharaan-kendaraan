@@ -30,7 +30,7 @@ class Perawatan extends Model
         return $this->belongsTo(Kendaraan::class);
     }
 
-    public function detailKendaraan(): HasMany
+    public function detailPerawatan(): HasMany
     {
         return $this->hasMany(DetailPerawatan::class);
     }

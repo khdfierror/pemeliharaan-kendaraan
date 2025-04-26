@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PerawatanResource\Pages;
 
 use App\Filament\Resources\PerawatanResource;
+use App\Filament\Resources\PerawatanResource\RelationManagers\DetailPerawatanRelationManager;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 

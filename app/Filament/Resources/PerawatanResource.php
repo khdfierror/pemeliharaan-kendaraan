@@ -7,6 +7,8 @@ use App\Filament\Resources\PerawatanResource\RelationManagers;
 use App\Models\Perawatan;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -106,6 +108,8 @@ class PerawatanResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make()
+                        ->label('Detail'),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                 ])
@@ -117,10 +121,45 @@ class PerawatanResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Components\Section::make()
+                    ->schema([
+                        Components\Split::make([
+                            Components\Grid::make(2)
+                                ->schema([
+                                    Components\Group::make([
+                                        Components\TextEntry::make('kendaraan.nama')
+                                            ->label('Kendaraan'),
+                                        Components\TextEntry::make('tahun'),
+                                        Components\TextEntry::make('nomor_nota')
+                                            ->label('Nomor Nota'),
+                                        Components\TextEntry::make('tanggal_nota')
+                                            ->label('Tanggal Nota')
+                                            ->badge()
+                                            ->date()
+                                            ->color('success'),
+                                    ]),
+                                ]),
+                        ])->from('lg'),
+                    ]),
+                Components\Section::make('Keterangan')
+                    ->schema([
+                        Components\TextEntry::make('keterangan')
+                            ->prose()
+                            ->markdown()
+                            ->hiddenLabel(),
+                    ])
+                    ->collapsible(),
+            ]);
+    }
+
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\DetailPerawatanRelationManager::class,
         ];
     }
 
@@ -130,6 +169,7 @@ class PerawatanResource extends Resource
             'index' => Pages\ListPerawatan::route('/'),
             'create' => Pages\CreatePerawatan::route('/create'),
             'edit' => Pages\EditPerawatan::route('/{record}/edit'),
+            'view' => Pages\ViewPerawatan::route('/{record}'),
         ];
     }
 }
