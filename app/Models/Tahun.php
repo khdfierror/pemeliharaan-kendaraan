@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Tahun extends Model
 {
