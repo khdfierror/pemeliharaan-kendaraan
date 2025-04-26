@@ -25,6 +25,8 @@ class TahunResource extends Resource
 
     protected static ?int $navigationSort = 5;
 
+    protected static ?string $slug = 'pengaturan/tahun';
+
     public static function form(Form $form): Form
     {
         return $form

@@ -25,6 +25,8 @@ class JenisPerawatanResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
+    protected static ?string $slug = 'pengaturan/jenis-perawatan';
+
     public static function form(Form $form): Form
     {
         return $form
