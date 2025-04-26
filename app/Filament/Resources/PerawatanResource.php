@@ -87,7 +87,8 @@ class PerawatanResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tahun'),
                 Tables\Columns\TextColumn::make('nomor_nota')
-                    ->searchable(),
+                    ->searchable()
+                    ->label('Nomor Nota'),
                 Tables\Columns\TextColumn::make('tanggal_nota')
                     ->formatStateUsing(function (Model $record) {
                         $tanggal = $record->tanggal_nota?->locale('id')->translatedFormat('l, d M Y');
@@ -109,7 +110,7 @@ class PerawatanResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make()
-                        ->label('Detail'),
+                        ->label('Detail Perawatan'),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                 ])
@@ -138,8 +139,16 @@ class PerawatanResource extends Resource
                                             ->label('Nomor Nota'),
                                         Components\TextEntry::make('tanggal_nota')
                                             ->label('Tanggal Nota')
+                                            ->formatStateUsing(function (Model $record) {
+                                                $tanggal = $record->tanggal_nota?->locale('id')->translatedFormat('l, d M Y');
+
+                                                return new HtmlString(<<<HTML
+                                                    <div class="text-center">
+                                                        <div>$tanggal</div>
+                                                    </div>
+                                                HTML);
+                                            })
                                             ->badge()
-                                            ->date()
                                             ->color('success'),
                                     ]),
                                 ]),
