@@ -6,14 +6,18 @@ use App\Filament\Resources\PerawatanResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 
-class ManagePerawatans extends ManageRecords
+class ManagePerawatan extends ManageRecords
 {
     protected static string $resource = PerawatanResource::class;
+
+    protected static ?string $title = 'Perawatan';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Tambah')
+                ->modalWidth('xl'),
         ];
     }
 }

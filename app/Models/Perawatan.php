@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Perawatan extends Model
 {
@@ -18,4 +19,13 @@ class Perawatan extends Model
         'tanggal_nota',
         'keterangan',
     ];
+
+    protected $casts = [
+        'tanggal_nota' => 'date',
+    ];
+
+    public function kendaraan(): BelongsTo
+    {
+        return $this->belongsTo(Kendaraan::class);
+    }
 }
