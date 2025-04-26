@@ -65,7 +65,8 @@ class KendaraanResource extends Resource
                 Tables\Columns\TextColumn::make('tahun')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('merek')
-                    ->searchable(),
+                    ->searchable()
+                    ->formatStateUsing(fn($state) => ucwords(strtolower($state))),
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
             ])
