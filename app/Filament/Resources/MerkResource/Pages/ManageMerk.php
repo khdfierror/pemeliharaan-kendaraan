@@ -17,10 +17,10 @@ class ManageMerk extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('Tambah Merk')
+                ->label('Tambah')
                 ->modalWidth('xl')
                 ->modalHeading('Tambah')
-                ->modalSubmitActionLabel('Tambah')
+                ->modalSubmitActionLabel('Tambah Merk')
                 ->modalCancelActionLabel('Batal')
                 ->extraModalFooterActions(function (StaticAction $action): array {
                     return $action->canCreateAnother() ? [
