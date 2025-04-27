@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('kendaraan', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('merk_kendaaran_id')->nullable();
+            $table->foreignUlid('merk_id')->nullable();
             $table->unsignedSmallInteger('tahun')->nullable()->index();
             $table->string('nomor_plat')->nullable()->index();
             $table->string('jumlah_roda')->nullable();
