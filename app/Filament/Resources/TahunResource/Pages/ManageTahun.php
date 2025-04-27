@@ -11,7 +11,7 @@ class ManageTahun extends ManageRecords
 {
     protected static string $resource = TahunResource::class;
 
-    protected static ?string $title = 'Tahun';
+    protected static ?string $title = 'Data Tahun';
 
     protected function getHeaderActions(): array
     {
