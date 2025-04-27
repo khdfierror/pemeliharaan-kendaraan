@@ -98,9 +98,11 @@ class KendaraanResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->label('Ubah'),
+                    ->label('')
+                    ->iconButton(),
                 Tables\Actions\DeleteAction::make()
-                    ->label('Hapus'),
+                    ->label('')
+                    ->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
