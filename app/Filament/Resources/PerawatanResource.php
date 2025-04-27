@@ -164,18 +164,11 @@ class PerawatanResource extends Resource
                                             })
                                             ->badge()
                                             ->color('success'),
+                                        Components\TextEntry::make('keterangan'),
                                     ]),
-                                ]),
+                                ])->inlineLabel(),
                         ])->from('lg'),
                     ]),
-                Components\Section::make('Keterangan')
-                    ->schema([
-                        Components\TextEntry::make('keterangan')
-                            ->prose()
-                            ->markdown()
-                            ->hiddenLabel(),
-                    ])
-                    ->collapsible(),
             ]);
     }
 

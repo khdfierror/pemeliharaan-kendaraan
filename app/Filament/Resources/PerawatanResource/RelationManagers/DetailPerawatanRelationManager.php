@@ -34,17 +34,20 @@ class DetailPerawatanRelationManager extends RelationManager
                     ->native(false)
                     ->getOptionLabelFromRecordUsing(fn(Model $record) => "{$record->nama} ({$record->kode})")
                     ->searchable()
-                    ->preload(),
-                Forms\Components\TextInput::make('jumlah')
+                    ->preload()
+                    ->placeholder('Pilih Jenis Perawatan'),
+                Forms\Components\Textarea::make('uraian')
+                    ->autosize(),
+                Forms\Components\TextInput::make('volume')
                     ->numeric()
                     ->required()
                     ->reactive()
-                    ->afterStateUpdated(fn($set, $get) => $set('total', (int) $get('jumlah') * (int) $get('harga_satuan'))),
+                    ->afterStateUpdated(fn($set, $get) => $set('total', (int) $get('volume') * (int) $get('harga_satuan'))),
                 Forms\Components\TextInput::make('harga_satuan')
                     ->numeric()
                     ->required()
                     ->reactive()
-                    ->afterStateUpdated(fn($set, $get) => $set('total', (int) $get('jumlah') * (int) $get('harga_satuan'))),
+                    ->afterStateUpdated(fn($set, $get) => $set('total', (int) $get('volume') * (int) $get('harga_satuan'))),
                 Forms\Components\TextInput::make('total')
                     ->numeric()
                     ->disabled()
@@ -52,7 +55,7 @@ class DetailPerawatanRelationManager extends RelationManager
                     ->dehydrated(true),
                 Forms\Components\TextInput::make('masa_pakai')
                     ->label('Masa Pakai')
-                    ->helperText('*Dalam Bulan')
+                    ->suffix('Bulan')
                     ->numeric()
                     ->required(),
                 Forms\Components\TextInput::make('km_awal')
@@ -66,7 +69,7 @@ class DetailPerawatanRelationManager extends RelationManager
                 Forms\Components\Textarea::make('catatan')
                     ->required()
                     ->maxLength(255),
-            ])->columns(1);
+            ])->columns(1)->inlineLabel();
     }
 
     public function table(Table $table): Table
@@ -75,13 +78,12 @@ class DetailPerawatanRelationManager extends RelationManager
             ->emptyStateDescription(null)
             // ->recordTitleAttribute('catatan')
             ->columns([
-                Tables\Columns\TextColumn::make('index')
-                    ->label('No')
-                    ->rowIndex(),
                 Tables\Columns\TextColumn::make('jenisPerawatan.nama')
                     ->label('Jenis Perawatan')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('jumlah'),
+                Tables\Columns\TextColumn::make('uraian')
+                    ->wrap(),
+                Tables\Columns\TextColumn::make('volume'),
                 Tables\Columns\TextColumn::make('harga_satuan')
                     ->label('Harga Satuan')
                     ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
@@ -120,10 +122,12 @@ class DetailPerawatanRelationManager extends RelationManager
                     ->modalHeading('Tambah Detail Perawatan'),
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
+                Tables\Actions\EditAction::make()
+                    ->label('')
+                    ->iconButton(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('')
+                    ->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
