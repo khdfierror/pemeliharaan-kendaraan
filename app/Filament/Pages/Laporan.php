@@ -31,6 +31,7 @@ class Laporan extends Page implements Tables\Contracts\HasTable
                             'pengeluaran' => 'Rekapitulasi Pengeluaran',
                         ])
                         ->label('Laporan')
+                        ->columnSpanFull()
                         ->required(),
 
                     Forms\Components\Select::make('jumlah_roda')
