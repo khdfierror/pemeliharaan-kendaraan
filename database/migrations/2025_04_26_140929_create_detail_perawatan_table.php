@@ -16,7 +16,8 @@ return new class extends Migration
             $table->unsignedSmallInteger('tahun')->nullable()->index();
             $table->foreignUlid('perawatan_id')->nullable()->index();
             $table->foreignUlid('jenis_perawatan_id')->nullable()->index();
-            $table->string('jumlah')->nullable();
+            $table->text('uraian')->nullable();
+            $table->string('volume')->nullable();
             $table->string('harga_satuan')->nullable();
             $table->string('total')->nullable();
             $table->string('masa_pakai')->nullable();
