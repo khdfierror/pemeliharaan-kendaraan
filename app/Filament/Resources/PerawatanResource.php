@@ -48,12 +48,10 @@ class PerawatanResource extends Resource
                                 ->relationship('kendaraan', 'nama')
                                 ->required()
                                 ->native(false)
+                                ->placeholder('Pilih Kendaraan')
                                 ->getOptionLabelFromRecordUsing(fn(Model $record) => "{$record->nama} ({$record->nomor_plat})")
                                 ->searchable()
                                 ->preload(),
-                            Forms\Components\TextInput::make('tahun')
-                                ->numeric()
-                                ->required(),
                             Forms\Components\TextInput::make('nomor_nota')
                                 ->label('Nomor Nota')
                                 ->required()
@@ -81,7 +79,7 @@ class PerawatanResource extends Resource
                         ])->columnSpan(2)
                             ->hiddenOn(['create']),
                     ])
-            ]);
+            ])->inlineLabel();
     }
 
     public static function table(Table $table): Table
@@ -117,12 +115,17 @@ class PerawatanResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ViewAction::make()
-                        ->label('Detail Perawatan'),
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
+                Tables\Actions\ViewAction::make()
+                    ->label('')
+                    ->icon('heroicon-o-list-bullet')
+                    ->color('black')
+                    ->iconButton(),
+                Tables\Actions\EditAction::make()
+                    ->label('')
+                    ->iconButton(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('')
+                    ->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
