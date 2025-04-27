@@ -79,7 +79,7 @@ class KendaraanResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama')
                     ->label('Kendaraan')
-                    ->formatStateUsing(fn(Model $record, $state) => ucwords(strtolower($record->merek)) . ' ' . $state)
+                    ->formatStateUsing(fn(Model $record, $state) => ucwords(strtolower($record->merk->nama)) . ' ' . $state)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nomor_plat')
                     ->label('No. Plat')
