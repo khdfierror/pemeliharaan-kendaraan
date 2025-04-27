@@ -33,14 +33,13 @@ class TahunResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('tahun')
                     ->label('Tahun')
-                    ->columnSpanFull()
                     ->required(),
                 Forms\Components\Toggle::make('is_aktif')
                     ->label('Aktif')
                     ->columns(2),
                 Forms\Components\Toggle::make('is_default')
                     ->label('Default'),
-            ]);
+            ])->columns(1)->inlineLabel();
     }
 
     public static function table(Table $table): Table
