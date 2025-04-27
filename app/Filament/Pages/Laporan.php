@@ -16,6 +16,8 @@ class Laporan extends Page implements Tables\Contracts\HasTable
 
     protected static string $view = 'filament.pages.laporan';
 
+    protected static ?int $navigationSort = 5;
+
     public $laporan;
     public $jumlah_roda;
     public $jenis_perawatan;

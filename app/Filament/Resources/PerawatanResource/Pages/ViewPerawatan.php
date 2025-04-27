@@ -24,6 +24,11 @@ class ViewPerawatan extends ViewRecord
         ];
     }
 
+    public function getBreadcrumb(): string
+    {
+        return "Detail Perawatan";
+    }
+
     // protected function getActions(): array
     // {
     //     return [];

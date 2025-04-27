@@ -29,6 +29,8 @@ class PerawatanResource extends Resource
 
     protected static ?string $slug = 'perawatan';
 
+    protected static ?string $pluralLabel = 'Perawatan';
+
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery()->tahunAktif();

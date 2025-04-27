@@ -19,8 +19,8 @@ class EditPerawatan extends EditRecord
         ];
     }
 
-    // public function getRelationManagers(): array
-    // {
-    //     return [];
-    // }
+    public function getBreadcrumb(): string
+    {
+        return "Ubah Perawatan";
+    }
 }
