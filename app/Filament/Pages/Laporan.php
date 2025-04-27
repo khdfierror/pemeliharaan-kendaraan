@@ -25,28 +25,33 @@ class Laporan extends Page implements Tables\Contracts\HasTable
         return [
             'form' => $this->makeForm()
                 ->schema([
-                    Forms\Components\Select::make('laporan')
-                        ->options([
-                            'perawatan' => 'Data Perawatan Kendaraan',
-                            'pengeluaran' => 'Rekapitulasi Pengeluaran',
-                        ])
-                        ->label('Laporan')
-                        ->columnSpanFull()
-                        ->required(),
+                    Forms\Components\Fieldset::make()
+                        ->schema([
+                            Forms\Components\Select::make('laporan')
+                                ->options([
+                                    'perawatan' => 'Data Perawatan Kendaraan',
+                                    'pengeluaran' => 'Rekapitulasi Pengeluaran',
+                                ])
+                                ->placeholder('Pilih Laporan')
+                                ->label('Laporan')
+                                ->columnSpanFull()
+                                ->required(),
+                            Forms\Components\Select::make('jumlah_roda')
+                                ->label('Jumlah Roda')
+                                ->options([
+                                    2 => 'Roda 2',
+                                    4 => 'Roda 4',
+                                ])
+                                ->placeholder('Roda 2')
+                                ->required(),
 
-                    Forms\Components\Select::make('jumlah_roda')
-                        ->options([
-                            2 => 'Roda 2',
-                            4 => 'Roda 4',
-                        ])
-                        ->label('Jumlah Roda')
-                        ->required(),
-
-                    Forms\Components\Select::make('jenis_perawatan')
-                        ->options(JenisPerawatan::pluck('nama', 'id'))
-                        ->label('Jenis Perawatan')
-                        ->searchable()
-                        ->required(),
+                            Forms\Components\Select::make('jenis_perawatan')
+                                ->options(JenisPerawatan::pluck('nama', 'id'))
+                                ->label('Jenis Perawatan')
+                                ->searchable()
+                                ->placeholder('Pilih Jenis Perawatan')
+                                ->required(),
+                        ])->columns(1)
                 ])
                 ->statePath('data'),
         ];
@@ -56,7 +61,7 @@ class Laporan extends Page implements Tables\Contracts\HasTable
     {
         return \App\Models\Perawatan::query()
             ->when($this->jumlah_roda, function ($query) {
-                $query->whereHas('kendaraan', fn ($q) => $q->where('jumlah_roda', $this->jumlah_roda));
+                $query->whereHas('kendaraan', fn($q) => $q->where('jumlah_roda', $this->jumlah_roda));
             })
             ->when($this->jenis_perawatan, function ($query) {
                 $query->where('jenis_perawatan_id', $this->jenis_perawatan);
@@ -76,9 +81,9 @@ class Laporan extends Page implements Tables\Contracts\HasTable
     }
 
     public function submit()
-{
-    $this->fill($this->form->getState());
-}
+    {
+        $this->fill($this->form->getState());
+    }
 
 
     // protected function getHeaderActions(): array
