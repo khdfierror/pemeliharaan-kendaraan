@@ -35,7 +35,7 @@ class JenisPerawatanResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('nama')
                     ->required(),
-            ])->columns(1);
+            ])->columns(1)->inlineLabel();
     }
 
     public static function table(Table $table): Table
