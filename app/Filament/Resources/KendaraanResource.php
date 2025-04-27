@@ -39,8 +39,7 @@ class KendaraanResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('nomor_plat')
                     ->label('Nomor Plat')
-                    ->required()
-                    ->inlineLabel(),
+                    ->required(),
                 Forms\Components\Select::make('jumlah_roda')
                     ->label('Jumlah Roda')
                     ->placeholder('Pilih Jumlah Roda')
@@ -49,22 +48,18 @@ class KendaraanResource extends Resource
                         '4' => 'Roda 4',
                     ])
                     ->required()
-                    ->native(false)
-                    ->inlineLabel(),
+                    ->native(false),
                 Forms\Components\TextInput::make('tahun_produksi')
                     ->label('Tahun Produksi')
-                    ->numeric()
-                    ->inlineLabel(),
+                    ->numeric(),
                 Forms\Components\Select::make('merk_id')
                     ->label('Merk')
                     ->relationship('merk', 'nama')
                     ->placeholder('Pilih Merk Kendaraan')
-                    ->native(false)
-                    ->inlineLabel(),
+                    ->native(false),
                 Forms\Components\TextInput::make('nama')
-                    ->required()
-                    ->inlineLabel(),
-            ])->columns(1);
+                    ->required(),
+            ])->columns(1)->inlineLabel();
     }
 
     public static function table(Table $table): Table

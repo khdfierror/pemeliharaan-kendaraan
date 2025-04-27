@@ -19,7 +19,7 @@ class ManageKendaraan extends ManageRecords
             Actions\CreateAction::make()
                 ->label('Tambah')
                 ->modalWidth('xl')
-                ->modalHeading('Tambah')
+                ->modalHeading('Tambah Kendaraan')
                 ->modalSubmitActionLabel('Tambah')
                 ->modalCancelActionLabel('Batal')
                 ->extraModalFooterActions(function (StaticAction $action): array {
