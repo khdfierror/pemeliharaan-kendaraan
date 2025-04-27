@@ -42,9 +42,6 @@ class JenisPerawatanResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('index')
-                    ->label('No')
-                    ->rowIndex(),
                 Tables\Columns\TextColumn::make('kode')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama')
@@ -54,10 +51,12 @@ class JenisPerawatanResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
+                Tables\Actions\EditAction::make()
+                    ->label('')
+                    ->iconButton(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('')
+                    ->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
