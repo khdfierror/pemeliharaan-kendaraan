@@ -17,7 +17,7 @@ class ManageKendaraan extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('Tambah Kendaraan')
+                ->label('Tambah')
                 ->modalWidth('xl')
                 ->modalHeading('Tambah')
                 ->modalSubmitActionLabel('Tambah')
