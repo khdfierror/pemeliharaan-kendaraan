@@ -17,7 +17,7 @@ class TahunResource extends Resource
 {
     protected static ?string $model = Tahun::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-wrench';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
     protected static ?string $navigationLabel = 'Tahun';
 

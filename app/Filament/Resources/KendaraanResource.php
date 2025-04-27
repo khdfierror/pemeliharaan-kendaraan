@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class KendaraanResource extends Resource
@@ -38,14 +39,17 @@ class KendaraanResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('nomor_plat')
                     ->label('Nomor Plat')
-                    ->required(),
+                    ->required()
+                    ->inlineLabel(),
                 Forms\Components\TextInput::make('jumlah_roda')
                     ->label('Jumlah Roda')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->inlineLabel(),
                 Forms\Components\TextInput::make('tahun_produksi')
                     ->label('Tahun Produksi')
-                    ->numeric(),
+                    ->numeric()
+                    ->inlineLabel(),
                 Forms\Components\Select::make('merek')
                     ->options([
                         'toyota' => 'Toyota',
@@ -53,9 +57,11 @@ class KendaraanResource extends Resource
                         'honda' => 'Honda',
                         'mitsubishi' => 'Mitsubishi',
                         'suzuki' => 'Suzuki',
-                    ])->native(false),
+                    ])->native(false)
+                    ->inlineLabel(),
                 Forms\Components\TextInput::make('nama')
                     ->required()
+                    ->inlineLabel(),
             ])->columns(1);
     }
 
@@ -66,29 +72,38 @@ class KendaraanResource extends Resource
                 Tables\Columns\TextColumn::make('index')
                     ->label('No')
                     ->rowIndex(),
-                Tables\Columns\TextColumn::make('nomor_plat')
-                    ->label('Nomor Plat')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('jumlah_roda')
-                    ->label('Jumlah Roda')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('tahun_produksi')
                     ->label('Tahun Produksi')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('merek')
-                    ->searchable()
-                    ->formatStateUsing(fn($state) => ucwords(strtolower($state))),
                 Tables\Columns\TextColumn::make('nama')
+                    ->label('Kendaraan')
+                    ->formatStateUsing(fn(Model $record, $state) => ucwords(strtolower($record->merek)) . ' ' . $state)
                     ->searchable(),
+                Tables\Columns\TextColumn::make('nomor_plat')
+                    ->label('No. Plat')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('jumlah_roda')
+                    ->label('Roda')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('keterangan')
+                    ->searchable()
+                    ->wrap()
+                    ->default('-'),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('jumlah_roda')
+                    ->label('Jumlah Roda')
+                    ->options([
+                        '2' => 'Roda 2',
+                        '4' => 'Roda 4',
+                    ])->native(false)
+                    ->placeholder('Pilih Jumlah Roda'),
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
+                Tables\Actions\EditAction::make()
+                    ->label('Ubah'),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Hapus'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
