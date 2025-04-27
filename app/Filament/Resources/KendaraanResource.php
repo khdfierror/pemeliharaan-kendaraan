@@ -41,23 +41,25 @@ class KendaraanResource extends Resource
                     ->label('Nomor Plat')
                     ->required()
                     ->inlineLabel(),
-                Forms\Components\TextInput::make('jumlah_roda')
+                Forms\Components\Select::make('jumlah_roda')
                     ->label('Jumlah Roda')
+                    ->placeholder('Pilih Jumlah Roda')
+                    ->options([
+                        '2' => 'Roda 2',
+                        '4' => 'Roda 4',
+                    ])
                     ->required()
-                    ->numeric()
+                    ->native(false)
                     ->inlineLabel(),
                 Forms\Components\TextInput::make('tahun_produksi')
                     ->label('Tahun Produksi')
                     ->numeric()
                     ->inlineLabel(),
-                Forms\Components\Select::make('merek')
-                    ->options([
-                        'toyota' => 'Toyota',
-                        'daihatsu' => 'Daihatsu',
-                        'honda' => 'Honda',
-                        'mitsubishi' => 'Mitsubishi',
-                        'suzuki' => 'Suzuki',
-                    ])->native(false)
+                Forms\Components\Select::make('merk_id')
+                    ->label('Merk')
+                    ->relationship('merk', 'nama')
+                    ->placeholder('Pilih Merk Kendaraan')
+                    ->native(false)
                     ->inlineLabel(),
                 Forms\Components\TextInput::make('nama')
                     ->required()
