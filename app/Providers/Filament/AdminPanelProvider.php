@@ -80,6 +80,8 @@ class AdminPanelProvider extends PanelProvider
             ->spa()
             ->font('DM Sans')
             ->maxContentWidth('full')
+            // ->brandLogo(fn(): View => view('filament.logo'))
+            ->brandName('Sistem Informasi Perawatan Kendaraan Bermotor')
             ->readOnlyRelationManagersOnResourceViewPagesByDefault(false)
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->renderHook('panels::styles.before', fn(): string => Blade::render(<<<'HTML'

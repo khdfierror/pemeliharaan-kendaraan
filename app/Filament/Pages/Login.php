@@ -24,6 +24,11 @@ class Login extends Component implements HasForms
     use InteractsWithForms;
     use WithRateLimiting;
 
+    /**
+     * @var view-string
+     */
+    protected static string $view = 'filament.pages.login';
+
     public $username = '';
 
     public $password = '';
