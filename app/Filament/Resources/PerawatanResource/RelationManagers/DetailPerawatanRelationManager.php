@@ -113,7 +113,7 @@ class DetailPerawatanRelationManager extends RelationManager
                     ->searchable([
                         'tanggal',
                     ])
-                    ->label('Tanggal Nota'),
+                    ->label('Habis Masa Pakai'),
                 Tables\Columns\TextColumn::make('km_awal')
                     ->label('Kilometer')
                     ->formatStateUsing(function (Model $record, ?string $state) {
