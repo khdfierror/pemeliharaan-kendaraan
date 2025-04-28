@@ -87,7 +87,7 @@ class PerawatanResource extends Resource
                     ->label('Nomor Nota'),
                 Tables\Columns\TextColumn::make('tanggal_nota')
                     ->formatStateUsing(function (Model $record) {
-                        $tanggal = $record->tanggal_nota?->locale('id')->translatedFormat('l, d M Y');
+                        $tanggal = $record->tanggal_nota?->locale('id')->translatedFormat('l, d F Y');
 
                         return new HtmlString(<<<HTML
                             <div class="text-center">
@@ -141,7 +141,7 @@ class PerawatanResource extends Resource
                                         Components\TextEntry::make('tanggal_nota')
                                             ->label('Tanggal Nota')
                                             ->formatStateUsing(function (Model $record) {
-                                                $tanggal = $record->tanggal_nota?->locale('id')->translatedFormat('l, d M Y');
+                                                $tanggal = $record->tanggal_nota?->locale('id')->translatedFormat('l, d F Y');
 
                                                 return new HtmlString(<<<HTML
                                                     <div class="text-center">
