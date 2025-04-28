@@ -56,8 +56,7 @@ class PerawatanResource extends Resource
                                 ->preload(),
                             Forms\Components\TextInput::make('nomor_nota')
                                 ->label('Nomor Nota')
-                                ->required()
-                                ->numeric(),
+                                ->required(),
                             Forms\Components\DatePicker::make('tanggal_nota')
                                 ->label('Tanggal Nota')
                                 ->required()
@@ -68,18 +67,6 @@ class PerawatanResource extends Resource
                             Forms\Components\Textarea::make('keterangan')
                                 ->autosize(),
                         ])->columnSpan(4),
-
-                        Forms\Components\Section::make([
-                            Forms\Components\Placeholder::make('created_at')
-                                ->label('Dibuat pada')
-                                ->content(fn(Model $record): string => $record->created_at->diffForHumans())
-                                ->hiddenOn(['create']),
-                            Forms\Components\Placeholder::make('updated_at')
-                                ->label('Diubah pada')
-                                ->content(fn(Model $record): string => $record->created_at->diffForHumans())
-                                ->hiddenOn(['create']),
-                        ])->columnSpan(2)
-                            ->hiddenOn(['create']),
                     ])
             ])->inlineLabel();
     }

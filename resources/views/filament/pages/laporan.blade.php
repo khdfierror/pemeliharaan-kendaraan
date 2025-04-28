@@ -7,6 +7,6 @@
             </x-filament::button>
         </form>
 
-        {{-- {{ $this->table }} --}}
+        {{ $this->table }}
     </div>
 </x-filament::page>

@@ -45,7 +45,6 @@ class Login extends Component implements HasForms
                 'tahun' => date('Y'),
             ]);
         }
-
     }
 
     public function authenticate(): ?LoginResponse
@@ -102,7 +101,7 @@ class Login extends Component implements HasForms
                 ->password()
                 ->required(),
             Select::make('tahun')
-                ->options(collect(range($yearStart, date('Y')))->mapWithKeys(fn ($year) => [$year => $year]))
+                ->options(collect(range($yearStart, date('Y')))->mapWithKeys(fn($year) => [$year => $year]))
                 ->required()
                 ->hidden(! $this->useTahun),
             Checkbox::make('remember')
