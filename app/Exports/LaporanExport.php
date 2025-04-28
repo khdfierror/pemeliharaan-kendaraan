@@ -96,9 +96,9 @@ class LaporanExport implements FromArray, WithHeadings, WithEvents, WithStyles
         $perawatan = Perawatan::whereHas('kendaraan', function ($q) {
             $q->where('jumlah_roda', $this->jumlahRoda);
         })
-        ->whereYear('tanggal_nota', $this->tahun)
-        ->whereMonth('tanggal_nota', now()->month) // Bulan tetap bulan sekarang
-        ->get();
+            ->whereYear('tanggal_nota', $this->tahun)
+            ->whereMonth('tanggal_nota', now()->month) // Bulan tetap bulan sekarang
+            ->get();
         foreach ($perawatan as $index => $item) {
             $this->data[] = [
                 $index + 1,
@@ -125,7 +125,7 @@ class LaporanExport implements FromArray, WithHeadings, WithEvents, WithStyles
             $this->data[] = [
                 $index + 1,
                 $item->jenis_perawatan,
-                $item->uralan,
+                $item->uraian,
                 $item->biaya,
                 $item->masa_pakai,
                 $item->km_awal,
@@ -171,8 +171,8 @@ class LaporanExport implements FromArray, WithHeadings, WithEvents, WithStyles
                 // Bold baris total
                 $highestRow = $sheet->getHighestRow();
                 foreach (range('A', 'Z') as $col) {
-                    if (strtolower(trim($sheet->getCell($col.$highestRow)->getValue())) == 'total') {
-                        $sheet->getStyle('A'.$highestRow.':F'.$highestRow)->getFont()->setBold(true);
+                    if (strtolower(trim($sheet->getCell($col . $highestRow)->getValue())) == 'total') {
+                        $sheet->getStyle('A' . $highestRow . ':F' . $highestRow)->getFont()->setBold(true);
                     }
                 }
             }

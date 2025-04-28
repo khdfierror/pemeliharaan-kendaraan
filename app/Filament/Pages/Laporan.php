@@ -2,109 +2,86 @@
 
 namespace App\Filament\Pages;
 
-use App\Exports\LaporanExport;
-use App\Models\JenisPerawatan;
-use Filament\Forms;
-use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HtmlString;
-use Maatwebsite\Excel\Excel as ExcelExcel;
-use Maatwebsite\Excel\Facades\Excel as FacadesExcel;
-use PhpParser\Node\Stmt\Echo_;
-use Vtiful\Kernel\Excel;
+use Livewire\WithFileUploads;
+use Livewire\Component;
+use App\Exports\LaporanExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Filament\Forms;
+use App\Models\JenisPerawatan;
+use Filament\Forms\Form;
+use Illuminate\Support\Facades\Session;
+use Filament\Notifications\Notification;
 
 class Laporan extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-
+    protected static ?int $navigationSort = 5;
     protected static string $view = 'filament.pages.laporan';
 
-    protected static ?int $navigationSort = 5;
+    public $data = [];
 
-    public $laporan;
-    public $jumlah_roda;
-    public $jenis_perawatan;
-    public array $data = [];
 
-    protected function getForms(): array
+    protected function getViewData(): array
     {
         return [
-            'form' => $this->makeForm()
-                ->schema([
-                    Forms\Components\Fieldset::make()
-                        ->schema([
-                            Forms\Components\Select::make('laporan')
-                                ->options([
-                                    'jumlah_kendaraan'    => 'Jumlah Kendaraan',
-                                    'jumlah_perawatan'    => 'Jumlah Perawatan Kendaraan',
-                                    'perawatan_bulan_ini' => 'Perawatan Bulan Ini',
-                                    'jumlah_pengeluaran'  => 'Jumlah Pengeluaran',
-                                ])
-                                ->placeholder('Pilih Laporan')
-                                ->label('Laporan')
-                                ->columnSpanFull()
-                                ->required()
-                                ->native(false),
-                                
-                            Forms\Components\Select::make('jumlah_roda')
-                                ->label('Jumlah Roda')
-                                ->options([
-                                    2 => 'Roda 2',
-                                    4 => 'Roda 4',
-                                ])
-                                ->placeholder('Pilih Jumlah Roda')
-                                ->required()
-                                ->native(false),
-
-                            Forms\Components\Select::make('jenis_perawatan')
-                                ->label('Jenis Perawatan')
-                                ->options(JenisPerawatan::pluck('nama', 'id'))
-                                ->searchable()
-                                ->placeholder('Pilih Jenis Perawatan'),
-                        ])
-                        ->columns(1)
-                ])
-                // ->statePath('data'),
+            'form' => $this->form,
         ];
     }
 
-    public function submit(): void
+    public function form(Form $form): Form
     {
-        $laporan = $this->laporan;
-        $jumlahRoda = $this->jumlah_roda;
-        $jenisPerawatan = $this->jenis_perawatan;
-        $tahun = session('tahun') ?? now()->year;
+        return $form
+            ->schema([
+                Forms\Components\Select::make('laporan')
+                    ->options([
+                        'jumlah_kendaraan'    => 'Jumlah Kendaraan',
+                        'jumlah_perawatan'    => 'Jumlah Perawatan Kendaraan',
+                        'perawatan_bulan_ini' => 'Perawatan Bulan Ini',
+                        'jumlah_pengeluaran'  => 'Jumlah Pengeluaran',
+                    ])
+                    ->placeholder('Pilih Laporan')
+                    ->label('Laporan')
+                    ->required()
+                    ->native(false),
 
-        if (!$laporan || !$jumlahRoda) {
-            Notification::make()
-                ->title('Gagal')
-                ->body('Laporan dan Jumlah Roda wajib diisi.')
-                ->danger()
-                ->send();
-            return;
-        }
+                Forms\Components\Select::make('jumlah_roda')
+                    ->label('Jumlah Roda')
+                    ->options([
+                        2 => 'Roda 2',
+                        4 => 'Roda 4',
+                    ])
+                    ->placeholder('Pilih Jumlah Roda')
+                    ->required()
+                    ->native(false),
 
-        $fileName = 'laporan_' . now()->format('Ymd_His') . '.xlsx';
-        $export = new LaporanExport($laporan, $jumlahRoda, $jenisPerawatan, $tahun);
-        $fileContent = FacadesExcel::raw($export, \Maatwebsite\Excel\Excel::XLSX);
-
+                Forms\Components\Select::make('jenis_perawatan')
+                    ->label('Jenis Perawatan')
+                    ->options(JenisPerawatan::pluck('nama', 'id'))
+                    ->searchable()
+                    ->placeholder('Pilih Jenis Perawatan'),
+            ])
+            ->statePath('data'); // <<- tambahkan ini untuk BIND ke $data
     }
 
-    public function downloadFile()
-{
-    $fileContent = '...'; 
-    $fileName = 'data.xlsx'; 
+    public function submit()
+    {
+        $laporan = $this->data['laporan'] ?? null;
+        $jumlahRoda = $this->data['jumlah_roda'] ?? null;
+        $jenisPerawatan = $this->data['jenis_perawatan'] ?? null;
+        $tahun = session('tahun') ?? now()->year;
 
-    return response()->stream(function () use ($fileContent) {
-        echo $fileContent;
-    }, 200, [
-        'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
-    ]);
-}
+        // if (!$laporan || !$jumlahRoda) {
+        //     Notification::make()
+        //         ->title('Gagal')
+        //         ->body('Laporan dan Jumlah Roda wajib diisi.')
+        //         ->danger()
+        //         ->send();
+        //     return;
+        // }
 
-    
+        $export = new LaporanExport($laporan, $jumlahRoda, $jenisPerawatan, $tahun);
+
+        return Excel::download($export, 'laporan_' . now()->format('Ymd_His') . '.xlsx');
+    }
 }
