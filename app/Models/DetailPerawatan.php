@@ -6,6 +6,7 @@ use App\Concerns\HasTahunAktif;
 use App\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 class DetailPerawatan extends Model
 {
@@ -30,6 +31,7 @@ class DetailPerawatan extends Model
 
     protected $casts = [
         'habis_masa_pakai' => 'date',
+        'masa_pakai' => 'integer',
     ];
 
     public function jenisPerawatan(): BelongsTo
@@ -40,5 +42,24 @@ class DetailPerawatan extends Model
     public function perawatan(): BelongsTo
     {
         return $this->belongsTo(Perawatan::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($detail) {
+            if ($detail->perawatan && $detail->masa_pakai) {
+                $tanggalNota = $detail->perawatan->tanggal_nota ?? now();
+                $detail->habis_masa_pakai = Carbon::parse($tanggalNota)->addMonths((int) $detail->masa_pakai);
+            }
+        });
+
+        static::updating(function ($detail) {
+            if ($detail->perawatan && $detail->masa_pakai) {
+                $tanggalNota = $detail->perawatan->tanggal_nota ?? now();
+                $detail->habis_masa_pakai = Carbon::parse($tanggalNota)->addMonths((int) $detail->masa_pakai);
+            }
+        });
     }
 }

@@ -100,6 +100,20 @@ class DetailPerawatanRelationManager extends RelationManager
                             HTML
                         );
                     }),
+                Tables\Columns\TextColumn::make('habis_masa_pakai')
+                    ->formatStateUsing(function (Model $record) {
+                        $tanggal = $record->habis_masa_pakai?->locale('id')->translatedFormat('l, d F Y');
+
+                        return new HtmlString(<<<HTML
+                            <div class="text-center">
+                                <div>$tanggal</div>
+                            </div>
+                        HTML);
+                    })
+                    ->searchable([
+                        'tanggal',
+                    ])
+                    ->label('Tanggal Nota'),
                 Tables\Columns\TextColumn::make('km_awal')
                     ->label('Kilometer')
                     ->formatStateUsing(function (Model $record, ?string $state) {
