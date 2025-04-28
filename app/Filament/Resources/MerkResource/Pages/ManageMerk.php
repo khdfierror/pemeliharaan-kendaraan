@@ -11,7 +11,7 @@ class ManageMerk extends ManageRecords
 {
     protected static string $resource = MerkResource::class;
 
-    protected static ?string $title  = 'Data Merk';
+    protected static ?string $title  = 'Master - Merk Kendaraan';
 
     protected function getHeaderActions(): array
     {

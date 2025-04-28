@@ -11,7 +11,7 @@ class ManageJenisPerawatan extends ManageRecords
 {
     protected static string $resource = JenisPerawatanResource::class;
 
-    protected static ?string $title = 'Data Jenis Perawatan';
+    protected static ?string $title = 'Master - Jenis Perawatan';
 
     protected function getHeaderActions(): array
     {

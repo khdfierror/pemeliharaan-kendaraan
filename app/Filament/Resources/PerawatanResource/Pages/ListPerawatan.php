@@ -12,7 +12,7 @@ class ListPerawatan extends ListRecords
 {
     protected static string $resource = PerawatanResource::class;
 
-    protected static ?string $title = 'Data Perawatan';
+    protected static ?string $title = 'Data Perawatan Kendaraan';
 
     protected function getHeaderActions(): array
     {

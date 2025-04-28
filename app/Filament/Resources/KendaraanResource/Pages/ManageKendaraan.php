@@ -11,7 +11,7 @@ class ManageKendaraan extends ManageRecords
 {
     protected static string $resource = KendaraanResource::class;
 
-    protected static ?string $title = 'Data Kendaraan';
+    protected static ?string $title = 'Data Kendaraan Bermotor';
 
     protected function getHeaderActions(): array
     {
