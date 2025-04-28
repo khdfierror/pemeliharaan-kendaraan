@@ -21,7 +21,12 @@ class SelectTahun extends Component implements HasForms
     public function mount()
     {
         $this->tahunOptions = Tahun::pluck('tahun', 'tahun')->toArray();
-        $this->tahun = Session::get('tahun-aktif', !empty($this->tahunOptions) ? max($this->tahunOptions) : null);
+
+        $defaultTahun = Tahun::where('is_default', 1)->value('tahun');
+
+        $this->tahun = Session::get('tahun-aktif')
+            ?? $defaultTahun
+            ?? (!empty($this->tahunOptions) ? max($this->tahunOptions) : null);
 
         $this->form->fill([
             'tahun' => $this->tahun,
