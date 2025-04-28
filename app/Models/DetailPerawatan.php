@@ -22,9 +22,14 @@ class DetailPerawatan extends Model
         'harga_satuan',
         'total',
         'masa_pakai',
+        'habis_masa_pakai',
         'km_awal',
         'km_akhir',
         'catatan',
+    ];
+
+    protected $casts = [
+        'habis_masa_pakai' => 'date',
     ];
 
     public function jenisPerawatan(): BelongsTo
