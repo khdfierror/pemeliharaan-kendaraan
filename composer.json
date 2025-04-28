@@ -15,6 +15,7 @@
         "laravel/pulse": "^1.0@beta",
         "laravel/tinker": "^2.9",
         "league/flysystem-aws-s3-v3": "^3.29",
+        "maatwebsite/excel": "^3.1",
         "stechstudio/filament-impersonate": "^3.7"
     },
     "require-dev": {
