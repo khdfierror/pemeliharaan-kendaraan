@@ -6,7 +6,5 @@
                 Tampilkan
             </x-filament::button>
         </form>
-
-        {{ $this->table }}
     </div>
 </x-filament::page>
