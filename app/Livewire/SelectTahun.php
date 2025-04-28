@@ -13,6 +13,7 @@ use Livewire\Component;
 class SelectTahun extends Component implements HasForms
 {
     use InteractsWithForms;
+
     public $tahun;
 
     public $tahunOptions = [];
