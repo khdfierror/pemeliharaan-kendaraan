@@ -28,13 +28,15 @@ class DashboardStat extends Widget
                 $q->where('jumlah_roda', 4);
             })->count(),
 
-            'perlu_perawatan_roda_2' => Perawatan::whereMonth('tanggal_nota', now()->month)
-                ->whereHas('kendaraan', function ($q) {
+            'perlu_perawatan_roda_2' => DetailPerawatan::whereMonth('habis_masa_pakai', now()->month)
+                ->whereYear('habis_masa_pakai', now()->year)
+                ->whereHas('perawatan.kendaraan', function ($q) {
                     $q->where('jumlah_roda', 2);
                 })->count(),
 
-            'perlu_perawatan_roda_4' => Perawatan::whereMonth('tanggal_nota', now()->month)
-                ->whereHas('kendaraan', function ($q) {
+            'perlu_perawatan_roda_4' => DetailPerawatan::whereMonth('habis_masa_pakai', now()->month)
+                ->whereYear('habis_masa_pakai', now()->year)
+                ->whereHas('perawatan.kendaraan', function ($q) {
                     $q->where('jumlah_roda', 4);
                 })->count(),
 
@@ -46,7 +48,6 @@ class DashboardStat extends Widget
                 $q->where('jumlah_roda', 4);
             })->sum('total'),
 
-                ];
-        }
-
+        ];
+    }
 }
