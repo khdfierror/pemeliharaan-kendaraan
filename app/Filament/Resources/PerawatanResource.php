@@ -7,8 +7,6 @@ use App\Filament\Resources\PerawatanResource\RelationManagers;
 use App\Models\Perawatan;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Infolists\Infolist;
-use Filament\Infolists\Components;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -27,48 +25,35 @@ class PerawatanResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
-    protected static ?string $slug = 'perawatan';
-
-    protected static ?string $pluralLabel = 'Perawatan';
-
-    public static function getEloquentQuery(): Builder
-    {
-        $query = parent::getEloquentQuery()->tahunAktif();
-
-        return $query;
-    }
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Grid::make(6)
-                    ->schema([
-                        Forms\Components\Group::make([
-                            Forms\Components\Select::make('kendaraan_id')
-                                ->label('Kendaraan')
-                                ->relationship('kendaraan', 'nama')
-                                ->required()
-                                ->native(false)
-                                ->placeholder('Pilih Kendaraan')
-                                ->getOptionLabelFromRecordUsing(fn(Model $record) => "{$record->nama} ({$record->nomor_plat})")
-                                ->searchable()
-                                ->preload(),
-                            Forms\Components\TextInput::make('nomor_nota')
-                                ->label('Nomor Nota')
-                                ->required(),
-                            Forms\Components\DatePicker::make('tanggal_nota')
-                                ->label('Tanggal Nota')
-                                ->required()
-                                ->format('Y-m-d')
-                                ->displayFormat('d/m/Y')
-                                ->native(false)
-                                ->suffixIcon('carbon-event-schedule'),
-                            Forms\Components\Textarea::make('keterangan')
-                                ->autosize(),
-                        ])->columnSpan(4),
-                    ])
-            ])->inlineLabel();
+                Forms\Components\Select::make('kendaraan_id')
+                    ->label('Kendaraan')
+                    ->relationship('kendaraan', 'nama')
+                    ->required()
+                    ->native(false)
+                    ->getOptionLabelFromRecordUsing(fn(Model $record) => "{$record->nama} ({$record->nomor_plat})")
+                    ->searchable()
+                    ->preload(),
+                Forms\Components\TextInput::make('tahun')
+                    ->numeric()
+                    ->required(),
+                Forms\Components\TextInput::make('nomor_nota')
+                    ->label('Nomor Nota')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\DatePicker::make('tanggal_nota')
+                    ->label('Tanggal Nota')
+                    ->required()
+                    ->format('Y-m-d')
+                    ->displayFormat('d/m/Y')
+                    ->native(false)
+                    ->suffixIcon('carbon-event-schedule'),
+                Forms\Components\Textarea::make('keterangan')
+                    ->autosize()
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table
@@ -83,11 +68,10 @@ class PerawatanResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tahun'),
                 Tables\Columns\TextColumn::make('nomor_nota')
-                    ->searchable()
-                    ->label('Nomor Nota'),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('tanggal_nota')
                     ->formatStateUsing(function (Model $record) {
-                        $tanggal = $record->tanggal_nota?->locale('id')->translatedFormat('l, d F Y');
+                        $tanggal = $record->tanggal_nota?->locale('id')->translatedFormat('l, d M Y');
 
                         return new HtmlString(<<<HTML
                             <div class="text-center">
@@ -104,17 +88,10 @@ class PerawatanResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->label('')
-                    ->icon('heroicon-o-list-bullet')
-                    ->color('black')
-                    ->iconButton(),
-                Tables\Actions\EditAction::make()
-                    ->label('')
-                    ->iconButton(),
-                Tables\Actions\DeleteAction::make()
-                    ->label('')
-                    ->iconButton(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -123,56 +100,10 @@ class PerawatanResource extends Resource
             ]);
     }
 
-    public static function infolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->schema([
-                Components\Section::make()
-                    ->schema([
-                        Components\Split::make([
-                            Components\Grid::make(2)
-                                ->schema([
-                                    Components\Group::make([
-                                        Components\TextEntry::make('kendaraan.nama')
-                                            ->label('Kendaraan'),
-                                        Components\TextEntry::make('tahun'),
-                                        Components\TextEntry::make('nomor_nota')
-                                            ->label('Nomor Nota'),
-                                        Components\TextEntry::make('tanggal_nota')
-                                            ->label('Tanggal Nota')
-                                            ->formatStateUsing(function (Model $record) {
-                                                $tanggal = $record->tanggal_nota?->locale('id')->translatedFormat('l, d F Y');
-
-                                                return new HtmlString(<<<HTML
-                                                    <div class="text-center">
-                                                        <div>$tanggal</div>
-                                                    </div>
-                                                HTML);
-                                            })
-                                            ->badge()
-                                            ->color('success'),
-                                        Components\TextEntry::make('keterangan'),
-                                    ]),
-                                ])->inlineLabel(),
-                        ])->from('lg'),
-                    ]),
-            ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            RelationManagers\DetailPerawatanRelationManager::class,
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPerawatan::route('/'),
-            'create' => Pages\CreatePerawatan::route('/create'),
-            'edit' => Pages\EditPerawatan::route('/{record}/edit'),
-            'view' => Pages\ViewPerawatan::route('/{record}'),
+            'index' => Pages\ManagePerawatan::route('/'),
         ];
     }
 }

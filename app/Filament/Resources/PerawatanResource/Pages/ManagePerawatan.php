@@ -4,23 +4,20 @@ namespace App\Filament\Resources\PerawatanResource\Pages;
 
 use App\Filament\Resources\PerawatanResource;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Pages\ManageRecords;
 
-class EditPerawatan extends EditRecord
+class ManagePerawatan extends ManageRecords
 {
     protected static string $resource = PerawatanResource::class;
 
-    protected static ?string $title = 'Edit Perawatan';
+    protected static ?string $title = 'Perawatan';
 
     protected function getHeaderActions(): array
     {
         return [
-            // Actions\DeleteAction::make(),
+            Actions\CreateAction::make()
+                ->label('Tambah')
+                ->modalWidth('xl'),
         ];
-    }
-
-    public function getBreadcrumb(): string
-    {
-        return "Ubah Perawatan";
     }
 }

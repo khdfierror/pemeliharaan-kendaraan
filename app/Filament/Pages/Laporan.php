@@ -2,46 +2,36 @@
 
 namespace App\Filament\Pages;
 
-use Filament\Pages\Page;
-use Livewire\WithFileUploads;
-use Livewire\Component;
-use App\Exports\LaporanExport;
-use Maatwebsite\Excel\Facades\Excel;
-use Filament\Forms;
+use App\Exports\DaftarKendaraanExport;
+use App\Exports\PerawatanBulanIniExport;
 use App\Models\JenisPerawatan;
-use Filament\Forms\Form;
-use Illuminate\Support\Facades\Session;
+use Filament\Pages\Page;
+use Filament\Forms;
+use Maatwebsite\Excel\Facades\Excel;
 use Filament\Notifications\Notification;
 
 class Laporan extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?int $navigationSort = 5;
+    protected static ?string $title = 'Laporan';
+    protected static ?string $slug = 'laporan';
     protected static string $view = 'filament.pages.laporan';
 
-    public $data = [];
+    public $laporan;
+    public $jumlah_roda;
+    public $jenis_perawatan_id;
 
-
-    protected function getViewData(): array
-    {
-        return [
-            'form' => $this->form,
-        ];
-    }
-
-    public function form(Form $form): Form
+    public function form(Forms\Form $form): Forms\Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('laporan')
+                    ->label('Pilih Laporan')
                     ->options([
-                        'jumlah_kendaraan'    => 'Jumlah Kendaraan',
-                        'jumlah_perawatan'    => 'Jumlah Perawatan Kendaraan',
-                        'perawatan_bulan_ini' => 'Perawatan Bulan Ini',
-                        'jumlah_pengeluaran'  => 'Jumlah Pengeluaran',
+                        'daftar_kendaraan' => 'Daftar Kendaraan Bermotor',
+                        'perawatan_bulan_ini' => 'Data Kendaraan Bermotor Yang Perlu Perawatan Bulan Ini',
                     ])
                     ->placeholder('Pilih Laporan')
-                    ->label('Laporan')
                     ->required()
                     ->native(false),
 
@@ -51,37 +41,41 @@ class Laporan extends Page
                         2 => 'Roda 2',
                         4 => 'Roda 4',
                     ])
-                    ->placeholder('Pilih Jumlah Roda')
-                    ->required()
+                    ->placeholder('Semua Roda')
                     ->native(false),
 
-                Forms\Components\Select::make('jenis_perawatan')
+                Forms\Components\Select::make('jenis_perawatan_id')
                     ->label('Jenis Perawatan')
                     ->options(JenisPerawatan::pluck('nama', 'id'))
                     ->searchable()
+                    ->native(false)
                     ->placeholder('Pilih Jenis Perawatan'),
-            ])
-            ->statePath('data'); // <<- tambahkan ini untuk BIND ke $data
+            ]);
     }
 
     public function submit()
     {
-        $laporan = $this->data['laporan'] ?? null;
-        $jumlahRoda = $this->data['jumlah_roda'] ?? null;
-        $jenisPerawatan = $this->data['jenis_perawatan'] ?? null;
-        $tahun = session('tahun') ?? now()->year;
+        if (!$this->laporan) {
+            Notification::make()
+                ->title('Gagal')
+                ->body('Silakan pilih jenis laporan terlebih dahulu.')
+                ->danger()
+                ->send();
+            return;
+        }
 
-        // if (!$laporan || !$jumlahRoda) {
-        //     Notification::make()
-        //         ->title('Gagal')
-        //         ->body('Laporan dan Jumlah Roda wajib diisi.')
-        //         ->danger()
-        //         ->send();
-        //     return;
-        // }
+        if ($this->laporan == 'daftar_kendaraan') {
+            return Excel::download(
+                new DaftarKendaraanExport($this->jumlah_roda),
+                'daftar_kendaraan_' . now()->format('Ymd_His') . '.xlsx'
+            );
+        }
 
-        $export = new LaporanExport($laporan, $jumlahRoda, $jenisPerawatan, $tahun);
-
-        return Excel::download($export, 'laporan_' . now()->format('Ymd_His') . '.xlsx');
+        if ($this->laporan == 'perawatan_bulan_ini') {
+            return Excel::download(
+                new PerawatanBulanIniExport($this->jumlah_roda, $this->jenis_perawatan_id),
+                'perawatan_bulan_ini_' . now()->format('Ymd_His') . '.xlsx'
+            );
+        }
     }
 }
