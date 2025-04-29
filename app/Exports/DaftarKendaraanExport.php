@@ -23,16 +23,17 @@ class DaftarKendaraanExport implements FromArray, ShouldAutoSize, WithStyles, Wi
     private string $lastColumn = 'F';
     private string $title = 'Daftar Kendaraan Bermotor';
     private array $data = [];
+
     private array $sectionTitleRows = [];
+    private array $headerRows = [];
+    private array $dataBlocks = [];
 
     public function array(): array
     {
         $this->data = [];
-
         $this->generateSection(2);
         $this->addEmptyRow();
         $this->generateSection(4);
-
         return $this->data;
     }
 
@@ -41,14 +42,16 @@ class DaftarKendaraanExport implements FromArray, ShouldAutoSize, WithStyles, Wi
         $kendaraans = Kendaraan::where('jumlah_roda', $jumlahRoda)->get();
 
         $this->data[] = ["Kendaraan Roda {$jumlahRoda}", '', '', '', '', ''];
-        $this->sectionTitleRows[] = count($this->data); 
+        $this->sectionTitleRows[] = count($this->data);
 
         $this->data[] = ['No.', 'Nomor Plat', 'Tahun', 'Merk', 'Nama', 'Keterangan'];
+        $this->headerRows[] = count($this->data);
 
+        $no = 1;
         if ($kendaraans->isNotEmpty()) {
             foreach ($kendaraans as $kendaraan) {
                 $this->data[] = [
-                    $this->nomor++,
+                    $no++,
                     $kendaraan->nomor_plat,
                     $kendaraan->tahun,
                     $kendaraan->merk->nama ?? '-',
@@ -57,6 +60,11 @@ class DaftarKendaraanExport implements FromArray, ShouldAutoSize, WithStyles, Wi
                 ];
             }
         }
+
+        $this->dataBlocks[] = [
+            'start' => $this->headerRows[array_key_last($this->headerRows)],
+            'end' => count($this->data),
+        ];
     }
 
     protected function addEmptyRow()
@@ -92,7 +100,7 @@ class DaftarKendaraanExport implements FromArray, ShouldAutoSize, WithStyles, Wi
                 $sheet->freezePane('A4');
 
                 foreach ($this->sectionTitleRows as $row) {
-                    $row += 3; 
+                    $row += 3;
                     $sheet->mergeCells("A{$row}:{$lastColumn}{$row}");
                     $sheet->getStyle("A{$row}")->applyFromArray([
                         'font' => ['bold' => true, 'size' => 12],
@@ -102,20 +110,42 @@ class DaftarKendaraanExport implements FromArray, ShouldAutoSize, WithStyles, Wi
                         ],
                         'fill' => [
                             'fillType' => Fill::FILL_SOLID,
-                            'startColor' => ['argb' => 'FFF3F4F6'], // Warna abu-abu muda
+                            'startColor' => ['argb' => 'FFF3F4F6'],
                         ],
                     ]);
                 }
 
-                $highestRow = $sheet->getHighestRow();
-                $sheet->getStyle("A4:{$lastColumn}{$highestRow}")->applyFromArray([
-                    'borders' => [
-                        'allBorders' => [
-                            'borderStyle' => Border::BORDER_THIN,
-                            'color' => ['argb' => '000000'],
+                foreach ($this->headerRows as $row) {
+                    $row += 3;
+                    $sheet->getStyle("A{$row}:{$lastColumn}{$row}")->applyFromArray([
+                        'font' => ['bold' => true],
+                        'fill' => [
+                            'fillType' => Fill::FILL_SOLID,
+                            'startColor' => ['argb' => 'FFE5E7EB'],
                         ],
-                    ],
-                ]);
+                        'alignment' => [
+                            'horizontal' => Alignment::HORIZONTAL_CENTER,
+                            'vertical' => Alignment::VERTICAL_CENTER,
+                        ],
+                    ]);
+                }
+
+                foreach ($this->dataBlocks as $block) {
+                    $start = $block['start'] + 3;
+                    $end = $block['end'] + 3;
+
+                    $sheet->getStyle("A{$start}:{$lastColumn}{$end}")->applyFromArray([
+                        'borders' => [
+                            'allBorders' => [
+                                'borderStyle' => Border::BORDER_THIN,
+                                'color' => ['argb' => '000000'],
+                            ],
+                        ],
+                        'alignment' => [
+                            'vertical' => Alignment::VERTICAL_CENTER,
+                        ],
+                    ]);
+                }
             }
         ];
     }
@@ -133,7 +163,7 @@ class DaftarKendaraanExport implements FromArray, ShouldAutoSize, WithStyles, Wi
 
     public function styles(Worksheet $sheet): array
     {
-        return []; 
+        return [];
     }
 
     public function columnWidths(): array
