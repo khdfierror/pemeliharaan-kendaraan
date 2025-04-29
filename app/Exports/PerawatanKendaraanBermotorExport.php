@@ -22,58 +22,100 @@ class PerawatanKendaraanBermotorExport implements FromArray, ShouldAutoSize, Wit
     private array $data = [];
     private string $title = 'Data Perawatan Kendaraan Bermotor';
     private string $lastColumn = 'G';
+    private ?int $jumlahRoda = null;
+    private ?int $jenisPerawatanId = null;
+
+    public function __construct(?int $jumlahRoda = null, ?int $jenisPerawatanId = null)
+    {
+        $this->jumlahRoda = $jumlahRoda;
+        $this->jenisPerawatanId = $jenisPerawatanId;
+    }
 
     public function array(): array
     {
         $this->data = [];
-        $this->generateSection(2);
-        $this->addEmptyRow();
-        $this->generateSection(4);
+
+        if ($this->jumlahRoda) {
+            $this->generateSection($this->jumlahRoda);
+        } else {
+            $this->generateSection(2);
+            $this->addEmptyRow();
+            $this->generateSection(4);
+        }
+
         return $this->data;
     }
 
     protected function generateSection(int $jumlahRoda)
     {
-        $kendaraans = Kendaraan::query()
-            ->where('jumlah_roda', $jumlahRoda)
-            ->with(['perawatan.detailPerawatan']) // <- ini fix relasinya
-            ->get();
+        $perawatans = \App\Models\Perawatan::query()
+            ->whereHas('kendaraan', function ($query) use ($jumlahRoda) {
+                $query->where('jumlah_roda', $jumlahRoda);
+            })
+            ->whereHas('detailPerawatan', function ($query) {
+                if ($this->jenisPerawatanId) {
+                    $query->where('jenis_perawatan_id', $this->jenisPerawatanId);
+                }
+            })
+            ->with([
+                'kendaraan',
+                'detailPerawatan' => function ($query) {
+                    if ($this->jenisPerawatanId) {
+                        $query->where('jenis_perawatan_id', $this->jenisPerawatanId);
+                    }
+                },
+                'detailPerawatan.jenisPerawatan'
+            ])
+            ->get()
+            ->groupBy('kendaraan_id');
 
         $this->data[] = ["Roda {$jumlahRoda}", '', '', '', '', '', ''];
 
-        foreach ($kendaraans as $kendaraan) {
-            foreach ($kendaraan->perawatan as $perawatan) {
-                $this->data[] = ["{$kendaraan->nama} ({$kendaraan->nomor_plat})", '', '', '', '', '', ''];
+        foreach ($perawatans as $kendaraanId => $perawatanList) {
+            $kendaraan = $perawatanList->first()->kendaraan;
+
+            $this->data[] = ["{$kendaraan->nama} ({$kendaraan->nomor_plat})", '', '', '', '', '', ''];
+
+            foreach ($perawatanList as $perawatan) {
+                if ($perawatan->detailPerawatan->isEmpty()) {
+                    continue;
+                }
+
                 $this->data[] = [
                     "No Nota: {$perawatan->nomor_nota}\nTgl Nota: " . ($perawatan->tanggal_nota ? $perawatan->tanggal_nota->format('d F Y') : '-'),
-                    '', '', '', '', '', ''
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    ''
                 ];
-                
+
                 $this->data[] = ['No.', 'Jenis Perawatan', 'Uraian', 'Biaya', 'Masa Pakai', 'KM Awal', 'KM Akhir'];
 
                 $totalBiaya = 0;
+                $urut = 1;
 
-                if (!empty($perawatan->detailPerawatan)) {
-                    foreach ($perawatan->detailPerawatan as $index => $detail) {
-                        $this->data[] = [
-                            $index + 1,
-                            $detail->jenisPerawatan->nama ?? '-',
-                            $detail->uraian ?? '-',
-                            number_format($detail->total ?? 0, 0, ',', '.'),
-                            $detail->masa_pakai ?? '-',
-                            $detail->km_awal ?? 0,
-                            $detail->km_akhir ?? 0,
-                        ];
-                        $totalBiaya += $detail->total ?? 0;
-                    }
+                foreach ($perawatan->detailPerawatan as $detail) {
+                    $this->data[] = [
+                        $urut++,
+                        $detail->jenisPerawatan->nama ?? '-',
+                        $detail->uraian ?? '-',
+                        $detail->total ?? 0,
+                        $detail->masa_pakai ?? '-',
+                        $detail->km_awal ?? 0,
+                        $detail->km_akhir ?? 0,
+                    ];
+                    $totalBiaya += $detail->total ?? 0;
                 }
 
-                $this->data[] = ['', '', 'Total', number_format($totalBiaya, 0, ',', '.'), '', '', ''];
+                $this->data[] = ['', '', 'Total', $totalBiaya, '', '', ''];
                 $this->addEmptyRow();
             }
+
+            $this->addEmptyRow();
         }
     }
-
 
     protected function addEmptyRow()
     {
@@ -96,8 +138,8 @@ class PerawatanKendaraanBermotorExport implements FromArray, ShouldAutoSize, Wit
                 ]);
 
                 $sheet->freezePane('A3');
-                $highestRow = $sheet->getHighestRow();
 
+                $highestRow = $sheet->getHighestRow();
                 $sheet->getStyle("A6:{$lastColumn}{$highestRow}")->applyFromArray([
                     'borders' => [
                         'allBorders' => [
@@ -106,6 +148,11 @@ class PerawatanKendaraanBermotorExport implements FromArray, ShouldAutoSize, Wit
                         ],
                     ],
                 ]);
+
+                // Format kolom D (Biaya dan Total) sebagai format Rupiah
+                $sheet->getDelegate()->getStyle("D6:D{$highestRow}")
+                    ->getNumberFormat()
+                    ->setFormatCode('"Rp" #,##0');
 
                 for ($row = 3; $row <= $highestRow; $row++) {
                     $cellValue = $sheet->getCell("A{$row}")->getValue();
@@ -132,7 +179,6 @@ class PerawatanKendaraanBermotorExport implements FromArray, ShouldAutoSize, Wit
                 'wrapText' => true,
                 'vertical' => Alignment::VERTICAL_CENTER,
             ],
-            
         ];
     }
 

@@ -80,7 +80,14 @@ class PerawatanResource extends Resource
                     ->rowIndex(),
                 Tables\Columns\TextColumn::make('kendaraan.nama')
                     ->label('Kendaraan')
-                    ->searchable(),
+                    ->searchable()
+                    ->formatStateUsing(function ($state, $record) {
+                        $merk = $record->kendaraan?->merk?->nama ?? '-';
+                        $nama = $record->kendaraan?->nama ?? '-';
+                        $plat = $record->kendaraan?->nomor_plat ?? '-';
+
+                        return "{$merk} {$nama} ({$plat})";
+                    }),
                 Tables\Columns\TextColumn::make('tahun'),
                 Tables\Columns\TextColumn::make('nomor_nota')
                     ->searchable()
@@ -134,7 +141,14 @@ class PerawatanResource extends Resource
                                 ->schema([
                                     Components\Group::make([
                                         Components\TextEntry::make('kendaraan.nama')
-                                            ->label('Kendaraan'),
+                                            ->label('Kendaraan')
+                                            ->formatStateUsing(function ($state, $record) {
+                                                $merk = $record->kendaraan?->merk?->nama ?? '-';
+                                                $nama = $record->kendaraan?->nama ?? '-';
+                                                $plat = $record->kendaraan?->nomor_plat ?? '-';
+
+                                                return "{$merk} {$nama} ({$plat})";
+                                            }),
                                         Components\TextEntry::make('tahun'),
                                         Components\TextEntry::make('nomor_nota')
                                             ->label('Nomor Nota'),

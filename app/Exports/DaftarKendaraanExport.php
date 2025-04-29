@@ -28,18 +28,35 @@ class DaftarKendaraanExport implements FromArray, ShouldAutoSize, WithStyles, Wi
     private array $headerRows = [];
     private array $dataBlocks = [];
 
+    private ?int $jumlahRoda = null;
+
+    public function __construct(?int $jumlahRoda = null)
+    {
+        $this->jumlahRoda = $jumlahRoda;
+    }
+
     public function array(): array
     {
         $this->data = [];
-        $this->generateSection(2);
-        $this->addEmptyRow();
-        $this->generateSection(4);
+
+        if ($this->jumlahRoda) {
+            $this->generateSection($this->jumlahRoda);
+        } else {
+            $this->generateSection(2);
+            $this->addEmptyRow();
+            $this->generateSection(4);
+        }
+
         return $this->data;
     }
 
     protected function generateSection(int $jumlahRoda)
     {
         $kendaraans = Kendaraan::where('jumlah_roda', $jumlahRoda)->get();
+
+        if ($kendaraans->isEmpty()) {
+            return; // kalau kosong, jangan buat header kosong
+        }
 
         $this->data[] = ["Kendaraan Roda {$jumlahRoda}", '', '', '', '', ''];
         $this->sectionTitleRows[] = count($this->data);
@@ -48,17 +65,15 @@ class DaftarKendaraanExport implements FromArray, ShouldAutoSize, WithStyles, Wi
         $this->headerRows[] = count($this->data);
 
         $no = 1;
-        if ($kendaraans->isNotEmpty()) {
-            foreach ($kendaraans as $kendaraan) {
-                $this->data[] = [
-                    $no++,
-                    $kendaraan->nomor_plat,
-                    $kendaraan->tahun,
-                    $kendaraan->merk->nama ?? '-',
-                    $kendaraan->nama,
-                    $kendaraan->keterangan ?? '-',
-                ];
-            }
+        foreach ($kendaraans as $kendaraan) {
+            $this->data[] = [
+                $no++,
+                $kendaraan->nomor_plat,
+                $kendaraan->tahun,
+                $kendaraan->merk->nama ?? '-',
+                $kendaraan->nama,
+                $kendaraan->keterangan ?? '-',
+            ];
         }
 
         $this->dataBlocks[] = [

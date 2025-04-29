@@ -17,6 +17,7 @@ class Laporan extends Page
     protected static ?string $title = 'Laporan';
     protected static ?string $slug = 'laporan';
     protected static string $view = 'filament.pages.laporan';
+    protected static ?int $navigationSort = 4;
 
     public $laporan;
     public $jumlah_roda;
@@ -66,23 +67,25 @@ class Laporan extends Page
             return;
         }
 
-        if ($this->laporan == 'daftar_kendaraan') {
+        $jenisPerawatanId = $this->jenis_perawatan_id ? (int) $this->jenis_perawatan_id : null;
+
+        if ($this->laporan === 'daftar_kendaraan') {
             return Excel::download(
                 new DaftarKendaraanExport($this->jumlah_roda),
                 'daftar_kendaraan_' . now()->format('Ymd_His') . '.xlsx'
             );
         }
 
-        if ($this->laporan == 'perawatan_bulan_ini') {
+        if ($this->laporan === 'perawatan_bulan_ini') {
             return Excel::download(
-                new PerawatanBulanIniExport($this->jumlah_roda, $this->jenis_perawatan_id),
+                new PerawatanBulanIniExport($this->jumlah_roda, $jenisPerawatanId),
                 'perawatan_bulan_ini_' . now()->format('Ymd_His') . '.xlsx'
             );
         }
 
-        if ($this->laporan == 'perawatan_kendaraan_bermotor') {
+        if ($this->laporan === 'perawatan_kendaraan_bermotor') {
             return Excel::download(
-                new PerawatanKendaraanBermotorExport($this->jumlah_roda, $this->jenis_perawatan_id),
+                new PerawatanKendaraanBermotorExport($this->jumlah_roda, $jenisPerawatanId),
                 'perawatan_kendaraan_bermotor_' . now()->format('Ymd_His') . '.xlsx'
             );
         }

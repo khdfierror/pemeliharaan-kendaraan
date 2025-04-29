@@ -51,7 +51,7 @@ class PerawatanBulanIniExport implements FromArray, ShouldAutoSize, WithStyles, 
 
     protected function generateSection(int $jumlahRoda)
     {
-        $this->nomor = 1; // ✅ Reset nomor setiap section baru
+        $this->nomor = 1;
 
         $query = DetailPerawatan::whereHas('perawatan.kendaraan', function ($q) use ($jumlahRoda) {
             $q->where('jumlah_roda', $jumlahRoda);
@@ -64,21 +64,35 @@ class PerawatanBulanIniExport implements FromArray, ShouldAutoSize, WithStyles, 
         $query->whereMonth('habis_masa_pakai', now()->month)
             ->whereYear('habis_masa_pakai', now()->year);
 
-        $details = $query->with('perawatan.kendaraan', 'jenisPerawatan')->get();
+        $details = $query->with('perawatan.kendaraan.merk', 'jenisPerawatan')->get();
 
         $this->data[] = ["Kendaraan Roda {$jumlahRoda}", '', '', ''];
         $this->sectionTitleRows[] = count($this->data);
 
-        $this->data[] = ['No.', 'Nama Kendaraan', 'Jenis Perawatan', 'Habis Masa Pakai'];
+        $this->data[] = ['No.', 'Kendaraan', 'Jenis Perawatan', 'Habis Masa Pakai'];
 
         if ($details->isNotEmpty()) {
-            foreach ($details as $detail) {
-                $this->data[] = [
-                    $this->nomor++,
-                    $detail->perawatan->kendaraan->nama ?? '-',
-                    $detail->jenisPerawatan->nama ?? '-',
-                    $detail->habis_masa_pakai?->format('d-m-Y') ?? '-',
-                ];
+            // Grouping berdasarkan kendaraan_id
+            $grouped = $details->groupBy(function ($item) {
+                return $item->perawatan->kendaraan_id;
+            });
+
+            foreach ($grouped as $kendaraanId => $detailsGroup) {
+                $firstDetail = $detailsGroup->first();
+                $kendaraan = $firstDetail->perawatan->kendaraan;
+                $merkNamaPlat = ($kendaraan->merk->nama ?? '-') . ' ' . ($kendaraan->nama ?? '-') . ' (' . ($kendaraan->nomor_plat ?? '-') . ')';
+
+                $first = true;
+
+                foreach ($detailsGroup as $detail) {
+                    $this->data[] = [
+                        $first ? $this->nomor++ : '',
+                        $first ? $merkNamaPlat : '',
+                        $detail->jenisPerawatan->nama ?? '-',
+                        $detail->habis_masa_pakai?->format('d-m-Y') ?? '-',
+                    ];
+                    $first = false;
+                }
             }
         }
     }
@@ -102,20 +116,15 @@ class PerawatanBulanIniExport implements FromArray, ShouldAutoSize, WithStyles, 
                 $sheet = $event->sheet;
                 $lastColumn = $this->lastColumn;
 
-                // Insert 3 baris kosong di atas
                 $sheet->insertNewRowBefore(1, 3);
-
-                // Set judul besar
                 $sheet->setCellValue('A1', $this->title);
                 $sheet->mergeCells("A1:{$lastColumn}1");
                 $sheet->getStyle('A1')->applyFromArray([
-                    'font' => ['bold' => true, 'size' => 16], // ✅ Kecilkan size dari 22 ke 16
+                    'font' => ['bold' => true, 'size' => 16],
                     'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
                 ]);
 
-                // Set tanggal diunduh
-                $tanggal = now()->translatedFormat('d F Y, H:i');
-                $sheet->setCellValue('A3', "Tanggal Diunduh: {$tanggal}");
+                $sheet->setCellValue('A3', "Tanggal Diunduh: " . now()->translatedFormat('d F Y, H:i'));
                 $sheet->mergeCells("A3:{$lastColumn}3");
                 $sheet->getStyle('A3')->applyFromArray([
                     'font' => ['italic' => true, 'size' => 10],
@@ -123,27 +132,19 @@ class PerawatanBulanIniExport implements FromArray, ShouldAutoSize, WithStyles, 
                 ]);
                 $sheet->getStyle('A3')->getFont()->getColor()->setARGB('FF888888');
 
-                // Freeze pane di header
                 $sheet->freezePane('A4');
 
-                // Format Section Title (Kendaraan Roda 2 / 4)
+                // Merge untuk section title
                 foreach ($this->sectionTitleRows as $row) {
-                    $row += 3; // Tambah 3 karena insertNewRowBefore(1,3)
+                    $row += 3;
                     $sheet->mergeCells("A{$row}:{$lastColumn}{$row}");
                     $sheet->getStyle("A{$row}")->applyFromArray([
                         'font' => ['bold' => true, 'size' => 12],
-                        'alignment' => [
-                            'horizontal' => Alignment::HORIZONTAL_LEFT,
-                            'vertical' => Alignment::VERTICAL_CENTER,
-                        ],
-                        'fill' => [
-                            'fillType' => Fill::FILL_SOLID,
-                            'startColor' => ['argb' => 'FFF3F4F6'],
-                        ],
+                        'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT],
+                        'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFF3F4F6']],
                     ]);
                 }
 
-                // Apply border ke seluruh data
                 $highestRow = $sheet->getHighestRow();
                 $sheet->getStyle("A4:{$lastColumn}{$highestRow}")->applyFromArray([
                     'borders' => [
@@ -153,9 +154,36 @@ class PerawatanBulanIniExport implements FromArray, ShouldAutoSize, WithStyles, 
                         ],
                     ],
                 ]);
+
+                // 🔥 Merge Kendaraan & Nomor di kolom A & B berdasarkan blok yang sama
+                $startRow = 5;
+                while ($startRow <= $highestRow) {
+                    $kendaraan = $sheet->getCell("B{$startRow}")->getValue();
+                    $rowSpan = 1;
+
+                    while (
+                        $startRow + $rowSpan <= $highestRow &&
+                        $sheet->getCell("B" . ($startRow + $rowSpan))->getValue() === ''
+                    ) {
+                        $rowSpan++;
+                    }
+
+                    if ($rowSpan > 1) {
+                        $sheet->mergeCells("A{$startRow}:A" . ($startRow + $rowSpan - 1));
+                        $sheet->mergeCells("B{$startRow}:B" . ($startRow + $rowSpan - 1));
+                        $sheet->getStyle("A{$startRow}:B" . ($startRow + $rowSpan - 1))->applyFromArray([
+                            'alignment' => [
+                                'vertical' => Alignment::VERTICAL_TOP,
+                            ],
+                        ]);
+                    }
+
+                    $startRow += $rowSpan;
+                }
             }
         ];
     }
+
 
     public function defaultStyles(Style $defaultStyle)
     {
@@ -177,7 +205,7 @@ class PerawatanBulanIniExport implements FromArray, ShouldAutoSize, WithStyles, 
     {
         return [
             'A' => 8,
-            'B' => 30,
+            'B' => 40,
             'C' => 25,
             'D' => 20,
         ];
