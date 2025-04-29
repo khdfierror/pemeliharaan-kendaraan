@@ -30,6 +30,7 @@ class Laporan extends Page
                     ->options([
                         'daftar_kendaraan' => 'Daftar Kendaraan Bermotor',
                         'perawatan_bulan_ini' => 'Data Kendaraan Bermotor Yang Perlu Perawatan Bulan Ini',
+                        'perawatan_kendaraan_bermotor' => 'Data Perawatan Kendaraan Bermotor',
                     ])
                     ->placeholder('Pilih Laporan')
                     ->required()
@@ -75,6 +76,13 @@ class Laporan extends Page
             return Excel::download(
                 new PerawatanBulanIniExport($this->jumlah_roda, $this->jenis_perawatan_id),
                 'perawatan_bulan_ini_' . now()->format('Ymd_His') . '.xlsx'
+            );
+        }
+
+        if ($this->laporan == 'perawatan_kendaraan_bermotor') {
+            return Excel::download(
+                new PerawatanKendaraanBermotorExport($this->jumlah_roda, $this->jenis_perawatan_id),
+                'perawatan_kendaraan_bermotor_' . now()->format('Ymd_His') . '.xlsx'
             );
         }
     }
