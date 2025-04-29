@@ -50,7 +50,7 @@ class LaporanKendaraan extends Page
                 ->send();
             return;
         }
-
-        return Excel::download(new JumlahKendaraanExport($jumlahRoda), 'jumlah_kendaraan.xlsx');
+        $filename = now()->format('Y-m-d_his') . '-data_jumlah_kendaraan.xlsx';
+        return Excel::download(new JumlahKendaraanExport($jumlahRoda), $filename);
     }
 }
