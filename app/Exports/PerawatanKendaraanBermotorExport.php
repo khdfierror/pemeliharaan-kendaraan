@@ -17,7 +17,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Style;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class PerawatanKendaraanExport implements FromArray, ShouldAutoSize, WithStyles, WithEvents, WithDefaultStyles, WithColumnWidths
+class PerawatanKendaraanBermotorExport implements FromArray, ShouldAutoSize, WithStyles, WithEvents, WithDefaultStyles, WithColumnWidths
 {
     private array $data = [];
     private string $title = 'Data Perawatan Kendaraan Bermotor';
@@ -43,10 +43,22 @@ class PerawatanKendaraanExport implements FromArray, ShouldAutoSize, WithStyles,
         foreach ($kendaraans as $kendaraan) {
             foreach ($kendaraan->perawatan as $perawatan) {
                 $this->data[] = [
-                    "{$kendaraan->nama} ({$kendaraan->nomor_plat})", '', '', '', '', '', '',
+                    "{$kendaraan->nama} ({$kendaraan->nomor_plat})",
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
                 ];
                 $this->data[] = [
-                    "No Nota: {$perawatan->no_nota}", '', '', "Tgl Nota: " . ($perawatan->tanggal ? $perawatan->tanggal->format('d F Y') : '-'), '', '', '',
+                    "No Nota: {$perawatan->no_nota}",
+                    '',
+                    '',
+                    "Tgl Nota: " . ($perawatan->tanggal ? $perawatan->tanggal->format('d F Y') : '-'),
+                    '',
+                    '',
+                    '',
                 ];
 
                 $this->data[] = ['No.', 'Jenis Perawatan', 'Uralan', 'Biaya', 'Masa Pakai', 'KM Awal', 'KM Akhir'];
@@ -66,7 +78,13 @@ class PerawatanKendaraanExport implements FromArray, ShouldAutoSize, WithStyles,
                 }
 
                 $this->data[] = [
-                    '', '', 'Total', $totalBiaya, '', '', '',
+                    '',
+                    '',
+                    'Total',
+                    $totalBiaya,
+                    '',
+                    '',
+                    '',
                 ];
 
                 $this->addEmptyRow();
