@@ -35,4 +35,23 @@ class Perawatan extends Model
     {
         return $this->hasMany(DetailPerawatan::class);
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updated(function (Perawatan $perawatan) {
+            if ($perawatan->wasChanged('tanggal_nota')) {
+                // Pastikan ambil data fresh
+                $details = $perawatan->detailPerawatan()->get();
+
+                foreach ($details as $detail) {
+                    if ($detail->masa_pakai) {
+                        $detail->habis_masa_pakai = \Carbon\Carbon::parse($perawatan->tanggal_nota)->addMonths((int) $detail->masa_pakai);
+                        $detail->saveQuietly();
+                    }
+                }
+            }
+        });
+    }
 }
