@@ -25,12 +25,13 @@ class PerawatanBulanIniExport implements FromArray, ShouldAutoSize, WithStyles, 
     private array $sectionTitleRows = [];
     private int $nomor = 1;
     private string $lastColumn = 'D';
-    private string $title = 'Data Kendaraan Bermotor Yang Perlu Perawatan Bulan Ini';
+    private string $title;
 
     public function __construct($jumlahRoda = null, $jenisPerawatanId = null)
     {
         $this->jumlahRoda = $jumlahRoda;
         $this->jenisPerawatanId = $jenisPerawatanId;
+        $this->title = 'Data Kendaraan Bermotor Yang Perlu Perawatan Bulan ' . now()->translatedFormat('F');
     }
 
     public function array(): array
@@ -73,7 +74,7 @@ class PerawatanBulanIniExport implements FromArray, ShouldAutoSize, WithStyles, 
         if ($details->isNotEmpty()) {
             foreach ($details as $detail) {
                 $this->data[] = [
-                    $this->nomor++, // jalan normal lagi
+                    $this->nomor++,
                     $detail->perawatan->kendaraan->nama ?? '-',
                     $detail->jenisPerawatan->nama ?? '-',
                     $detail->habis_masa_pakai?->format('d-m-Y') ?? '-',
@@ -81,7 +82,6 @@ class PerawatanBulanIniExport implements FromArray, ShouldAutoSize, WithStyles, 
             }
         }
     }
-
 
     protected function addEmptyRow()
     {
@@ -109,7 +109,7 @@ class PerawatanBulanIniExport implements FromArray, ShouldAutoSize, WithStyles, 
                 $sheet->setCellValue('A1', $this->title);
                 $sheet->mergeCells("A1:{$lastColumn}1");
                 $sheet->getStyle('A1')->applyFromArray([
-                    'font' => ['bold' => true, 'size' => 22],
+                    'font' => ['bold' => true, 'size' => 16], // ✅ Kecilkan size dari 22 ke 16
                     'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
                 ]);
 
