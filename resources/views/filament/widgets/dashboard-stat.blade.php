@@ -3,7 +3,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
             <div class="border p-4 rounded">
-                <h2 class="text-lg font-bold mb-2">Jumlah Kendaraan</h2>
+                <h2 class="text-lg font-bold mb-2">Jumlah Kendaraan Bermotor</h2>
                 <p>Roda 2: {{ $jumlah_kendaraan_roda_2 }} Unit</p>
                 <p>Roda 4: {{ $jumlah_kendaraan_roda_4 }} Unit</p>
             </div>
@@ -15,7 +15,7 @@
             </div>
 
             <div class="border p-4 rounded">
-                <h2 class="text-lg font-bold mb-2">Perawatan Bulan Ini</h2>
+                <h2 class="text-lg font-bold mb-2">Kendaraan Perlu Perawatan Bulan Ini</h2>
                 <p>Roda 2: {{ $perlu_perawatan_roda_2 }} Unit</p>
                 <p>Roda 4: {{ $perlu_perawatan_roda_4 }} Unit</p>
             </div>
