@@ -59,6 +59,8 @@ class KendaraanResource extends Resource
                     ->native(false),
                 Forms\Components\TextInput::make('nama')
                     ->required(),
+                Forms\Components\Textarea::make('keterangan')
+                    ->autosize(),
             ])->columns(1)->inlineLabel();
     }
 

@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 
@@ -133,15 +134,18 @@ class DetailPerawatanRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->label('Tambah Detail')
-                    ->modalHeading('Tambah Detail Perawatan'),
+                    ->modalHeading('Tambah Detail Perawatan')
+                    ->hidden(fn() => Auth::user()?->hasRole(['pimpinan', 'pengelola'])),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->label('')
-                    ->iconButton(),
+                    ->iconButton()
+                    ->hidden(fn() => Auth::user()?->hasRole(['pimpinan', 'pengelola'])),
                 Tables\Actions\DeleteAction::make()
                     ->label('')
-                    ->iconButton(),
+                    ->iconButton()
+                    ->hidden(fn() => Auth::user()?->hasRole(['pimpinan', 'pengelola'])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

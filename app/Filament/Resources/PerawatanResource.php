@@ -51,7 +51,7 @@ class PerawatanResource extends Resource
                                 ->required()
                                 ->native(false)
                                 ->placeholder('Pilih Kendaraan')
-                                ->getOptionLabelFromRecordUsing(fn(Model $record) => "{$record->nama} ({$record->nomor_plat})")
+                                ->getOptionLabelFromRecordUsing(fn(Model $record) => "{$record->merk->nama} {$record->nama} ({$record->nomor_plat}) (Roda {$record->jumlah_roda})")
                                 ->searchable()
                                 ->preload(),
                             Forms\Components\TextInput::make('nomor_nota')
@@ -85,8 +85,9 @@ class PerawatanResource extends Resource
                         $merk = $record->kendaraan?->merk?->nama ?? '-';
                         $nama = $record->kendaraan?->nama ?? '-';
                         $plat = $record->kendaraan?->nomor_plat ?? '-';
+                        $roda = $record->kendaraan?->jumlah_roda ?? '-';
 
-                        return "{$merk} {$nama} ({$plat})";
+                        return "{$merk} {$nama} ({$plat}) (Roda {$roda})";
                     }),
                 Tables\Columns\TextColumn::make('tahun'),
                 Tables\Columns\TextColumn::make('nomor_nota')

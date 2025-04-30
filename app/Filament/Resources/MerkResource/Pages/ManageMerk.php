@@ -19,8 +19,8 @@ class ManageMerk extends ManageRecords
             Actions\CreateAction::make()
                 ->label('Tambah')
                 ->modalWidth('xl')
-                ->modalHeading('Tambah')
-                ->modalSubmitActionLabel('Tambah Merk')
+                ->modalHeading('Tambah Merk Kendaraan')
+                ->modalSubmitActionLabel('Tambah')
                 ->modalCancelActionLabel('Batal')
                 ->extraModalFooterActions(function (StaticAction $action): array {
                     return $action->canCreateAnother() ? [

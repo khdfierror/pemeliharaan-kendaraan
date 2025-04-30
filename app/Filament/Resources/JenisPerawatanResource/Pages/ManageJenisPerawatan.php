@@ -19,7 +19,7 @@ class ManageJenisPerawatan extends ManageRecords
             Actions\CreateAction::make()
                 ->label('Tambah')
                 ->modalWidth('xl')
-                ->modalHeading('Tambah Jenis Kendaraan')
+                ->modalHeading('Tambah Jenis Perawatan')
                 ->modalSubmitActionLabel('Tambah')
                 ->modalCancelActionLabel('Batal')
                 ->extraModalFooterActions(function (StaticAction $action): array {

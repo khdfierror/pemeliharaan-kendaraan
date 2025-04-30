@@ -21,6 +21,7 @@ class Kendaraan extends Model
         'jumlah_roda',
         'tahun_produksi',
         'nama',
+        'keterangan',
     ];
 
     public function perawatan(): HasMany

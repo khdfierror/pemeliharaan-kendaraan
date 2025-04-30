@@ -47,12 +47,12 @@ class Laporan extends Page
                     ->placeholder('Semua Roda')
                     ->native(false),
 
-                Forms\Components\Select::make('jenis_perawatan_id')
-                    ->label('Jenis Perawatan')
-                    ->options(JenisPerawatan::pluck('nama', 'id'))
-                    ->searchable()
-                    ->native(false)
-                    ->placeholder('Pilih Jenis Perawatan'),
+                // Forms\Components\Select::make('jenis_perawatan_id')
+                //     ->label('Jenis Perawatan')
+                //     ->options(JenisPerawatan::pluck('nama', 'id'))
+                //     ->searchable()
+                //     ->native(false)
+                //     ->placeholder('Pilih Jenis Perawatan'),
             ]);
     }
 
