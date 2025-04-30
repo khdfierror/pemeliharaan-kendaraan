@@ -135,17 +135,17 @@ class DetailPerawatanRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->label('Tambah Detail')
                     ->modalHeading('Tambah Detail Perawatan')
-                    ->hidden(fn() => Auth::user()?->hasRole(['pimpinan', 'pengelola'])),
+                    ->hidden(fn() => Auth::user()?->hasRole('pimpinan')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->label('')
                     ->iconButton()
-                    ->hidden(fn() => Auth::user()?->hasRole(['pimpinan', 'pengelola'])),
+                    ->hidden(fn() => Auth::user()?->hasRole('pimpinan')),
                 Tables\Actions\DeleteAction::make()
                     ->label('')
                     ->iconButton()
-                    ->hidden(fn() => Auth::user()?->hasRole(['pimpinan', 'pengelola'])),
+                    ->hidden(fn() => Auth::user()?->hasRole('pimpinan')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
