@@ -88,7 +88,7 @@ class AdminPanelProvider extends PanelProvider
                 <style>
                     /** Setting Base Font */
                     html, body{
-                        font-size: 14px;
+                        font-size: 18px;
                     }
                 </style>
             HTML))
