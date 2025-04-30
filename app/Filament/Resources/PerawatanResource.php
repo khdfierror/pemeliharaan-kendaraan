@@ -149,8 +149,9 @@ class PerawatanResource extends Resource
                                                 $merk = $record->kendaraan?->merk?->nama ?? '-';
                                                 $nama = $record->kendaraan?->nama ?? '-';
                                                 $plat = $record->kendaraan?->nomor_plat ?? '-';
+                                                $roda = $record->kendaraan?->jumlah_roda ?? '-';
 
-                                                return "{$merk} {$nama} ({$plat})";
+                                                return "{$merk} {$nama} ({$plat}) (Roda {$roda})";
                                             }),
                                         Components\TextEntry::make('tahun'),
                                         Components\TextEntry::make('nomor_nota')
