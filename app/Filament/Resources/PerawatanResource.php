@@ -107,6 +107,8 @@ class PerawatanResource extends Resource
                         'tanggal',
                     ])
                     ->label('Tanggal Nota'),
+                Tables\Columns\TextColumn::make('keterangan')
+                    ->wrap(),
             ])
             ->filters([
                 //
