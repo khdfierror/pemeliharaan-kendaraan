@@ -1,16 +1,16 @@
-# 📘 Aplikasi Laravel & Filament
+# 📘 Sistem Informasi Perawatan Kendaraan Bermotor
 
-Aplikasi manajemen berbasis Laravel dengan dashboard admin menggunakan **Filament**. Dokumentasi ini menjelaskan proses instalasi, struktur, dan fitur utama aplikasi.
+Aplikasi Perawatan Kendaraan Bermotor menggunakan Laravel
 
 ---
 
 ## 📝 1. Informasi Umum
 
-- **Nama Proyek**: Aplikasi Manajemen [Nama Aplikasi]
-- **Framework**: Laravel 10
+- **Nama Proyek**: Sistem Informasi Perawatan Kendaraan Bermotor
+- **Framework**: Laravel 11
 - **Admin Panel**: Filament
-- **Tanggal Mulai**: [DD/MM/YYYY]
-- **Versi**: v1.0
+- **Tanggal Mulai**: [26/04/2025]
+- **Versi**: v3.2
 
 ---
 
@@ -18,23 +18,29 @@ Aplikasi manajemen berbasis Laravel dengan dashboard admin menggunakan **Filamen
 
 ### Server
 
-- PHP ≥ 8.1
+- PHP ≥ 8.3
 - Composer
 - MySQL / MariaDB
-- Node.js + NPM (jika menggunakan front-end tambahan)
+- Node.js + NPM
 
 ### Library Tambahan
 
 - `filament/filament`
-- `spatie/laravel-permission` *(opsional untuk role & permission)*
-- `barryvdh/laravel-dompdf` *(opsional untuk PDF export)*
-- `maatwebsite/excel` *(opsional untuk Excel import/export)*
+- `spatie/laravel-permission`
+- `maatwebsite/excel`
 
 ---
 
 ## 🛠️ 3. Instalasi & Setup
 
 ### a. Clone Repository
+
+```bash
+git clone https://github.com/namauser/nama-proyek.git
+cd nama-proyek
+
+
+### b. Clone Repository
 
 ```bash
 git clone https://github.com/namauser/nama-proyek.git
