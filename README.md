@@ -70,7 +70,7 @@ php artisan shield:super-admin
 php artisan shield:generate --all
 ```
 
-## 🛠️ 4. Fitur dalam aplikasi
+## 📄 4. Fitur dalam aplikasi
 
 ### Master :
 
