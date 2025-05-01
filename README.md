@@ -38,10 +38,53 @@ Aplikasi Perawatan Kendaraan Bermotor menggunakan Laravel
 ```bash
 git clone https://github.com/namauser/nama-proyek.git
 cd nama-proyek
+```
 
-
-### b. Clone Repository
+### b. Install Dependency
 
 ```bash
-git clone https://github.com/namauser/nama-proyek.git
-cd nama-proyek
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+#### c. Konfigurasi Database
+Buat database baru di MySQL, lalu perbarui file .env:
+```bash
+DB_DATABASE=pemeliharaan-kendaraan
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### d. Migrasi & Seeder
+
+```bash
+php artisan migrate --seed
+```
+
+### e. Instalasi User Super Admin
+
+```bash
+php artisan make:user
+php artisan shield:super-admin
+php artisan shield:generate --all
+```
+
+## 🛠️ 4. Fitur dalam aplikasi
+
+### Master :
+
+- Tahun
+- Jenis Perawatan
+- Merk Kendaraan
+
+### Fitur Utama :
+
+- Dashboard
+- User
+- Role
+- Kendaraan
+- Perawatan
+- Laporan
+
+
