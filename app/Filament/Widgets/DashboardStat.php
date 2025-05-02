@@ -22,16 +22,18 @@ class DashboardStat extends Widget
             'jumlah_kendaraan_roda_4' => Kendaraan::where('jumlah_roda', 4)->count(),
 
             // Jumlah Perawatan Kendaraan (di-group berdasarkan kendaraan, bukan berdasarkan perawatan)
-            'jumlah_perawatan_roda_2' => Perawatan::whereHas('kendaraan', function ($q) {
-                $q->where('jumlah_roda', 2);
-            })
+            'jumlah_perawatan_roda_2' => Perawatan::tahunAktif()
+                ->whereHas('kendaraan', function ($q) {
+                    $q->where('jumlah_roda', 2);
+                })
                 ->select('kendaraan_id')
                 ->distinct()
                 ->count('kendaraan_id'),
 
-            'jumlah_perawatan_roda_4' => Perawatan::whereHas('kendaraan', function ($q) {
-                $q->where('jumlah_roda', 4);
-            })
+            'jumlah_perawatan_roda_4' => Perawatan::tahunAktif()
+                ->whereHas('kendaraan', function ($q) {
+                    $q->where('jumlah_roda', 4);
+                })
                 ->select('kendaraan_id')
                 ->distinct()
                 ->count('kendaraan_id'),
@@ -57,13 +59,15 @@ class DashboardStat extends Widget
                 ->count('perawatan_id'),
 
             // Jumlah Pengeluaran
-            'pengeluaran_roda_2' => DetailPerawatan::whereHas('perawatan.kendaraan', function ($q) {
-                $q->where('jumlah_roda', 2);
-            })->sum('total'),
+            'pengeluaran_roda_2' => DetailPerawatan::tahunAktif()
+                ->whereHas('perawatan.kendaraan', function ($q) {
+                    $q->where('jumlah_roda', 2);
+                })->sum('total'),
 
-            'pengeluaran_roda_4' => DetailPerawatan::whereHas('perawatan.kendaraan', function ($q) {
-                $q->where('jumlah_roda', 4);
-            })->sum('total'),
+            'pengeluaran_roda_4' => DetailPerawatan::tahunAktif()
+                ->whereHas('perawatan.kendaraan', function ($q) {
+                    $q->where('jumlah_roda', 4);
+                })->sum('total'),
 
         ];
     }

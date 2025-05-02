@@ -49,6 +49,7 @@ class PerawatanKendaraanBermotorExport implements FromArray, ShouldAutoSize, Wit
     protected function generateSection(int $jumlahRoda)
     {
         $perawatans = \App\Models\Perawatan::query()
+            ->tahunAktif()
             ->whereHas('kendaraan', function ($query) use ($jumlahRoda) {
                 $query->where('jumlah_roda', $jumlahRoda);
             })
