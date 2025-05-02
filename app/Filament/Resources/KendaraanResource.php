@@ -50,7 +50,7 @@ class KendaraanResource extends Resource
                     ->required()
                     ->native(false),
                 Forms\Components\TextInput::make('tahun_produksi')
-                    ->label('Tahun Produksi')
+                    ->label('Tahun')
                     ->numeric(),
                 Forms\Components\Select::make('merk_id')
                     ->label('Merk')

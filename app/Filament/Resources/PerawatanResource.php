@@ -33,7 +33,8 @@ class PerawatanResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery()->tahunAktif();
+        $query = parent::getEloquentQuery()->tahunAktif()
+            ->with('kendaraan');
 
         return $query;
     }
@@ -111,7 +112,22 @@ class PerawatanResource extends Resource
                     ->wrap(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('jumlah_roda')
+                    ->label('Jumlah Roda')
+                    ->options([
+                        null => 'Semua',
+                        2 => 'Roda 2',
+                        4 => 'Roda 4',
+                    ])
+                    ->query(function ($query, array $data) {
+                        if (filled($data['value'])) {
+                            return $query->whereHas('kendaraan', function ($q) use ($data) {
+                                $q->where('jumlah_roda', (int) $data['value']);
+                            });
+                        }
+
+                        return $query;
+                    })->native(false),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
