@@ -125,9 +125,3 @@ Akses aplikasi kamu melalui domain:
 - Gunakan `.htaccess` untuk keamanan tambahan jika diperlukan
 - Pastikan SSL aktif di domain
 
----
-
-## 🧑‍💻 Tim Dokumentasi
-
-Dokumentasi disusun oleh: [Nama Kamu]  
-Lisensi: MIT / Custom (Sesuai Proyek)
