@@ -53,7 +53,14 @@ class TahunResource extends Resource
                 Tables\Columns\ToggleColumn::make('is_aktif')
                     ->label('Aktif'),
                 Tables\Columns\ToggleColumn::make('is_default')
-                    ->label('Default'),
+                    ->label('Default')
+                    ->afterStateUpdated(function ($state, $record) {
+                        if ($state) {
+                            $record->newQuery()
+                                ->where('id', '!=', $record->id)
+                                ->update(['is_default' => false]);
+                        }
+                    }),
             ])
             ->filters([
                 //
